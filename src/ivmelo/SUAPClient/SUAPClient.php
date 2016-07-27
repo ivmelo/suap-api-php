@@ -1,5 +1,4 @@
-<?php
-require_once 'vendor/autoload.php';
+<?php namespace Ivmelo\SUAPClient;
 
 use Goutte\Client;
 

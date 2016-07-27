@@ -5,7 +5,7 @@
     "require": {
         "fabpot/goutte": "^3.1"
     },
-    "license": "GNU",
+    "license": "MIT",
     "authors": [
         {
             "name": "Ivanilson Melo",
@@ -14,7 +14,7 @@
     ],
     "autoload": {
         "psr-0": {
-            "ivmelo\\SUAPClient": "src/"
+            "Ivmelo\\SUAPClient": "src/"
         }
     }
 }
