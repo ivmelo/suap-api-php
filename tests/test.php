@@ -1,13 +1,13 @@
 <?php
 
-require "../vendor/autoload.php";
+require '../vendor/autoload.php';
 
 use \Ivmelo\SUAPClient\SUAPClient;
 
 date_default_timezone_set('America/Fortaleza');
 
-$username = $argv[1];
-$password = $argv[2];
+$username = readline('Username(matricula): ');
+$password = readline('Password: ');
 
 $client = new SUAPClient($username, $password);
 
