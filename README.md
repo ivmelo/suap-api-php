@@ -5,6 +5,14 @@ This package allows you to access data from SUAP. (https://suap.ifrn.edu.br/)
 
 It shows grades, attendance and courses.
 
+### Instalation
+This package is available through composer.
+
+Just run
+```
+composer require ivmelo/suapclient
+```
+
 ### Usage
 ```
 $suap_client = SUAPClient('student_id', 'suap_password');
@@ -33,14 +41,14 @@ Array
             [absences] => 14
             [attendance] => 70
             [situation] => cursando
-            [bm1_grade] => 
+            [bm1_grade] =>
             [bm1_absences] => 6
-            [bm2_grade] => 
+            [bm2_grade] =>
             [bm2_absences] => 8
-            [average] => 
-            [n] => 
-            [f] => 
-            [mfd] => 
+            [average] =>
+            [n] =>
+            [f] =>
+            [mfd] =>
         )
 
     [1] => Array
@@ -55,11 +63,11 @@ Array
             [situation] => cursando
             [bm1_grade] => 90
             [bm1_absences] => 14
-            [bm2_grade] => 
+            [bm2_grade] =>
             [bm2_absences] => 8
             [average] => 36
-            [n] => 
-            [f] => 
+            [n] =>
+            [f] =>
             [mfd] => 36
         )
 
@@ -75,12 +83,12 @@ Array
             [situation] => cursando
             [bm1_grade] => 82
             [bm1_absences] => 2
-            [bm2_grade] => 
+            [bm2_grade] =>
             [bm2_absences] => 8
-            [average] => 
-            [n] => 
-            [f] => 
-            [mfd] => 
+            [average] =>
+            [n] =>
+            [f] =>
+            [mfd] =>
         )
 
     [3] => Array
@@ -91,16 +99,16 @@ Array
             [class_hours] => 40
             [classes_given] => 16
             [absences] => 16
-            [attendance] => 
+            [attendance] =>
             [situation] => cancelado
-            [bm1_grade] => 
+            [bm1_grade] =>
             [bm1_absences] => 16
-            [bm2_grade] => 
-            [bm2_absences] => 
-            [average] => 
-            [n] => 
-            [f] => 
-            [mfd] => 
+            [bm2_grade] =>
+            [bm2_absences] =>
+            [average] =>
+            [n] =>
+            [f] =>
+            [mfd] =>
         )
 
 )
@@ -113,4 +121,3 @@ It uses a web crawler to go through the HTML page and grab the relevant informat
 1. Get student info;
 1. Get history;
 1. Class schedule and location.
-
