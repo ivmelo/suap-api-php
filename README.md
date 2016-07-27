@@ -8,9 +8,11 @@ It shows grades, attendance and courses.
 ### Instalation
 This package is available through composer.
 
-Just run
+Add this to your composer.json and run `composer update`
 ```
-composer require ivmelo/suapclient
+"require": {
+    "ivmelo/suapclient": "@dev"
+}
 ```
 
 ### Usage
