@@ -83,32 +83,32 @@ class SUAPClient
             $grade_row = $grades->filter('tbody > tr')->eq($i);
 
             // trim white spaces before diary
-            $course_data['diary'] = (int) trim($grade_row->filter('td')->eq(0)->text()) ? (int) trim($grade_row->filter('td')->eq(0)->text()) : null;
+            $course_data['diario'] = (int) trim($grade_row->filter('td')->eq(0)->text()) ? (int) trim($grade_row->filter('td')->eq(0)->text()) : null;
 
             // explode course name and code from the same field
             $namecode = explode(" - ", $grade_row->filter('td')->eq(1)->text());
 
             // course code without name
-            $course_data['course_code'] = trim($namecode[0]);
+            $course_data['codigo'] = trim($namecode[0]);
 
             // course name without course code
-            $course_data['course'] = trim($namecode[1]);
+            $course_data['disciplina'] = trim($namecode[1]);
 
             // get total class-hours for the course
-            $course_data['class_hours'] = (int) $grade_row->filter('td')->eq(2)->text() ? (int) $grade_row->filter('td')->eq(2)->text() : null;
+            $course_data['carga_horaria'] = (int) $grade_row->filter('td')->eq(2)->text() ? (int) $grade_row->filter('td')->eq(2)->text() : null;
 
             // number or classes given
-            $course_data['classes_given'] = (int) $grade_row->filter('td')->eq(3)->text() ? (int) $grade_row->filter('td')->eq(3)->text() : null;
-            $course_data['absences'] = (int) $grade_row->filter('td')->eq(4)->text() ? (int) $grade_row->filter('td')->eq(4)->text() : null;
-            $course_data['attendance'] = (int) $grade_row->filter('td')->eq(5)->text() ? (int) $grade_row->filter('td')->eq(5)->text() : null;
-            $course_data['situation'] = strtolower($grade_row->filter('td')->eq(6)->text()) ? strtolower($grade_row->filter('td')->eq(6)->text()) : null;
-            $course_data['bm1_grade'] = (int) $grade_row->filter('td')->eq(7)->text() ? (int) $grade_row->filter('td')->eq(7)->text() : null;
-            $course_data['bm1_absences'] = (int) $grade_row->filter('td')->eq(8)->text() ? (int) $grade_row->filter('td')->eq(8)->text() : null;
-            $course_data['bm2_grade'] = (int) $grade_row->filter('td')->eq(9)->text() ? (int) $grade_row->filter('td')->eq(9)->text() : null;
-            $course_data['bm2_absences'] = (int) $grade_row->filter('td')->eq(10)->text() ? (int) $grade_row->filter('td')->eq(10)->text() : null;
-            $course_data['average'] = (int) $grade_row->filter('td')->eq(11)->text() ? (int) $grade_row->filter('td')->eq(11)->text() : null;
-            $course_data['n'] = (int) $grade_row->filter('td')->eq(12)->text() ? (int) $grade_row->filter('td')->eq(12)->text() : null;
-            $course_data['f'] = (int) $grade_row->filter('td')->eq(13)->text() ? (int) $grade_row->filter('td')->eq(13)->text() : null;
+            $course_data['aulas'] = (int) $grade_row->filter('td')->eq(3)->text() ? (int) $grade_row->filter('td')->eq(3)->text() : null;
+            $course_data['faltas'] = (int) $grade_row->filter('td')->eq(4)->text() ? (int) $grade_row->filter('td')->eq(4)->text() : null;
+            $course_data['frequencia'] = (int) $grade_row->filter('td')->eq(5)->text() ? (int) $grade_row->filter('td')->eq(5)->text() : null;
+            $course_data['situacao'] = strtolower($grade_row->filter('td')->eq(6)->text()) ? strtolower($grade_row->filter('td')->eq(6)->text()) : null;
+            $course_data['bm1_nota'] = (int) $grade_row->filter('td')->eq(7)->text() ? (int) $grade_row->filter('td')->eq(7)->text() : null;
+            $course_data['bm1_faltas'] = (int) $grade_row->filter('td')->eq(8)->text() ? (int) $grade_row->filter('td')->eq(8)->text() : null;
+            $course_data['bm2_nota'] = (int) $grade_row->filter('td')->eq(9)->text() ? (int) $grade_row->filter('td')->eq(9)->text() : null;
+            $course_data['bm2_faltas'] = (int) $grade_row->filter('td')->eq(10)->text() ? (int) $grade_row->filter('td')->eq(10)->text() : null;
+            $course_data['media'] = (int) $grade_row->filter('td')->eq(11)->text() ? (int) $grade_row->filter('td')->eq(11)->text() : null;
+            $course_data['naf_nota'] = (int) $grade_row->filter('td')->eq(12)->text() ? (int) $grade_row->filter('td')->eq(12)->text() : null;
+            $course_data['naf_faltas'] = (int) $grade_row->filter('td')->eq(13)->text() ? (int) $grade_row->filter('td')->eq(13)->text() : null;
             $course_data['mfd'] = (int) $grade_row->filter('td')->eq(14)->text() ? (int) $grade_row->filter('td')->eq(14)->text() : null;
 
             // push data into the $data array
@@ -118,7 +118,6 @@ class SUAPClient
         return $data;
     }
 
-    // TODO: get student data...
     public function getStudentData() {
         if (! $this->matricula) {
             $this->doLogin();
@@ -126,11 +125,29 @@ class SUAPClient
 
         $this->crawler = $this->client->request('GET', $this->aluno_endpoint . $this->matricula . '?tab=dados_pessoais');
 
+        // student data
+        $data = [];
+
+        // General data
         $info = $this->crawler->filter('table[class="info"]');
 
-        return $info->html();
+        $data['nome'] = trim($info->filter('td')->eq(1)->text());
+        $data['situacao'] = trim($info->filter('td')->eq(3)->text());
+        $data['matricula'] = trim($info->filter('td')->eq(5)->text());
+        $data['ingresso'] = trim($info->filter('td')->eq(7)->text());
+        $data['cpf'] = trim($info->filter('td')->eq(9)->text());
+        $data['periodo_referencia'] = (int) trim($info->filter('td')->eq(11)->text());
+        $data['ira'] = trim($info->filter('td')->eq(13)->text());
+        $data['curso'] = trim($info->filter('td')->eq(15)->text());
+        $data['matriz'] = trim($info->filter('td')->eq(17)->text());
 
-        //$grades = $this->crawler->filter('table[class="borda"]');
-        //$grade_rows = $grades->filter('tbody > tr');
+        // Contact info
+        $contact_info = $this->crawler->filter('.box')->eq(4);
+
+        $data['email_academico'] = trim($contact_info->filter('td')->eq(3)->text());
+        $data['email_pessoal'] = trim($contact_info->filter('td')->eq(7)->text());
+        $data['telefone'] = trim($contact_info->filter('td')->eq(9)->text());
+
+        return $data;
     }
 }

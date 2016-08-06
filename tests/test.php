@@ -12,3 +12,4 @@ $password = readline('Password: ');
 $client = new SUAPClient($username, $password);
 
 print_r($client->getGrades());
+print_r($client->getStudentData());
