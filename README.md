@@ -23,6 +23,15 @@ $suap_client = SUAPClient();
 $suap_client->setCredentials('student_id', 'suap_password');
 ```
 
+You can also use your _responsável_ access key (chave de acesso), which can be found under the 'Dados Pessoais' tab in your suap account.
+
+It's located in the 'Dados Gerais' session.
+
+Please notice that if using an access key, you need to suply "true" to the third argument in the constructor.
+```
+$suap_client = SUAPClient('student_id', 'access_key', true);
+```
+
 #### Getting course data.
 ```
 $grades = $suap_client->getGrades();

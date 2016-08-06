@@ -14,24 +14,35 @@ class SUAPClient
     private $matricula;
     private $endpoint = 'https://suap.ifrn.edu.br';
     private $aluno_endpoint = 'https://suap.ifrn.edu.br/edu/aluno/';
+    private $responsavel_endpoint = 'https://suap.ifrn.edu.br/edu/acesso_responsavel/';
+    private $is_access_code = false;
 
-    function __construct($username = null, $password = null)
+    function __construct($username = null, $password = null, $is_access_code = false)
     {
         if ($username && $password) {
             $this->username = $username;
             $this->password = $password;
+            $this->is_access_code = $is_access_code;
         }
 
         // guzzle client
         $this->client = new Client();
     }
 
-    public function setCredentials($username, $password) {
+    public function setCredentials($username, $password, $is_access_code) {
         $this->username = $username;
         $this->password = $password;
+        $this->is_access_code = $is_access_code;
     }
 
     public function doLogin() {
+        if ($this->is_access_code)
+            $this->doResponsavelLogin();
+        else
+            $this->doAlunoLogin();
+    }
+
+    public function doAlunoLogin() {
         // get csrf token
         $this->crawler = $this->client->request('GET', $this->endpoint);
         $token = $this->crawler->filter('input[name="csrfmiddlewaretoken"]');
@@ -51,6 +62,27 @@ class SUAPClient
         $this->matricula = $link_parts[5];
     }
 
+    public function doResponsavelLogin() {
+        // get csrf token
+        $this->crawler = $this->client->request('GET', $this->responsavel_endpoint);
+        $token = $this->crawler->filter('input[name="csrfmiddlewaretoken"]');
+        $token = $token->attr('value');
+
+        // get form and submit
+        $form = $this->crawler->selectButton('Acessar')->form();
+        $this->crawler = $this->client->submit($form, [
+            'matricula' => $this->username,
+            'chave' => $this->password,
+            'csrfmiddlewaretoken' => $token
+        ]);
+
+        //var_dump($this->crawler->html());
+
+        // set matricula
+        $info = $this->crawler->filter('table[class="info"]');
+        $this->matricula = trim($info->filter('td')->eq(5)->text());
+    }
+
     public function getMatricula() {
         if (! $this->matricula) {
             $this->doLogin();
@@ -61,7 +93,6 @@ class SUAPClient
 
     public function getGrades($ano_periodo = '') {
         // $ano_periodo no formato yyyy_p (ex.: 2015_1)
-
         if (! $this->matricula) {
             $this->doLogin();
         }
