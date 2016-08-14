@@ -5,7 +5,7 @@ This package allows you to access data from SUAP. (https://suap.ifrn.edu.br/)
 
 It shows grades, attendance and courses.
 
-*All pull requests should be made to the ```dev``` branch!*
+**All pull requests should be made to the ```dev``` branch!**
 
 ### Instalation
 This package is available through composer.
