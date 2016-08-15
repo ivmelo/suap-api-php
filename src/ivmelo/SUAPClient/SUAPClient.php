@@ -17,6 +17,9 @@ class SUAPClient
     private $responsavel_endpoint = 'https://suap.ifrn.edu.br/edu/acesso_responsavel/';
     private $is_access_code = false;
 
+    /**
+    * Construct function
+    **/
     function __construct($username = null, $password = null, $is_access_code = false)
     {
         if ($username && $password) {
@@ -29,12 +32,22 @@ class SUAPClient
         $this->client = new Client();
     }
 
+
+    /**
+    * Sets the credetials for this instance
+    *  @username: matricula
+    *  @password: suap password
+    *  @is_access_code: boolean (access key)
+    **/
     public function setCredentials($username, $password, $is_access_code) {
         $this->username = $username;
         $this->password = $password;
         $this->is_access_code = $is_access_code;
     }
 
+    /**
+    *  Does login for both cases (password or access key)
+    **/
     public function doLogin() {
         if ($this->is_access_code)
             $this->doResponsavelLogin();
@@ -42,6 +55,9 @@ class SUAPClient
             $this->doAlunoLogin();
     }
 
+    /**
+    *  Does login with ID and password
+    **/
     public function doAlunoLogin() {
         // get csrf token
         $this->crawler = $this->client->request('GET', $this->endpoint);
@@ -62,6 +78,10 @@ class SUAPClient
         $this->matricula = $link_parts[5];
     }
 
+
+    /**
+    *  Does login with ID and access key
+    **/
     public function doResponsavelLogin() {
         // get csrf token
         $this->crawler = $this->client->request('GET', $this->responsavel_endpoint);
@@ -83,6 +103,10 @@ class SUAPClient
         $this->matricula = trim($info->filter('td')->eq(5)->text());
     }
 
+
+    /**
+    *  Get this instance ID
+    **/
     public function getMatricula() {
         if (! $this->matricula) {
             $this->doLogin();
@@ -91,6 +115,10 @@ class SUAPClient
         return $this->matricula;
     }
 
+    /**
+    *  Return the information for all couses for the specified period/year (default = last period)
+    *  @ano_periodo: string for the desired period
+    **/
     public function getGrades($ano_periodo = '') {
         // $ano_periodo no formato yyyy_p (ex.: 2015_1)
         if (! $this->matricula) {
@@ -149,6 +177,58 @@ class SUAPClient
         return $data;
     }
 
+    /**
+    *  Returns a lists of all courses for the specified period/year (default = last period)
+    *  @ano_periodo: string for the desired period
+    **/
+    public function getCourses($ano_periodo = ''){
+        // $ano_periodo no formato yyyy_p (ex.: 2015_1)
+        if (! $this->matricula) {
+            $this->doLogin();
+        }
+        // go to grades page
+        $this->crawler = $this->client->request('GET', $this->aluno_endpoint . $this->matricula . '/?tab=boletim' . '&ano_periodo=' . $ano_periodo);
+        // get and manipulate grades table
+        $grades = $this->crawler->filter('table[class="borda"]');
+        $grade_rows = $grades->filter('tbody > tr');
+        // course data
+        $data = [];
+
+        for ($i = 0; $i < $grade_rows->count(); $i++) {
+          $course_data = [];
+          $grade_row = $grades->filter('tbody > tr')->eq($i);
+          //Get the name and cod
+          $course = $grade_row->filter('td')->eq(1)->text();
+          array_push($data, $course);
+        }
+
+        return $data;
+    }
+
+    /**
+    *  Gets the info for a specified course  and period
+    **/
+    public function getCourseData($course_code = "", $ano_periodo = ''){
+        //Uses getGrades function as helper
+        $courses = $this->getGrades($ano_periodo);
+        $data = [];
+        if($course_code != ""){
+            foreach ($courses as $course) {
+                if($course['codigo'] == $course_code){
+                    $data = $course;
+                }
+            }
+        }else{
+            //Gets the first one in the list
+            $data = $courses[0];
+        }
+        return $data;
+    }
+
+
+    /**
+    *  Gets the student data
+    **/
     public function getStudentData() {
         if (! $this->matricula) {
             $this->doLogin();
