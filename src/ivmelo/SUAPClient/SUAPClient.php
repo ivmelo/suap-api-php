@@ -17,6 +17,9 @@ class SUAPClient
     private $responsavel_endpoint = 'https://suap.ifrn.edu.br/edu/acesso_responsavel/';
     private $is_access_code = false;
 
+    /**
+    * Construct function
+    **/
     function __construct($username = null, $password = null, $is_access_code = false)
     {
         if ($username && $password) {
@@ -29,12 +32,22 @@ class SUAPClient
         $this->client = new Client();
     }
 
+
+    /**
+    * Sets the credetials for this instance
+    *  @username: matricula
+    *  @password: suap password
+    *  @is_access_code: boolean (access key)
+    **/
     public function setCredentials($username, $password, $is_access_code) {
         $this->username = $username;
         $this->password = $password;
         $this->is_access_code = $is_access_code;
     }
 
+    /**
+    *  Does login for both cases (password or access key)
+    **/
     public function doLogin() {
         if ($this->is_access_code)
             $this->doResponsavelLogin();
@@ -42,6 +55,9 @@ class SUAPClient
             $this->doAlunoLogin();
     }
 
+    /**
+    *  Does login with ID and password
+    **/
     public function doAlunoLogin() {
         // get csrf token
         $this->crawler = $this->client->request('GET', $this->endpoint);
@@ -62,6 +78,10 @@ class SUAPClient
         $this->matricula = $link_parts[5];
     }
 
+
+    /**
+    *  Does login with ID and access key
+    **/
     public function doResponsavelLogin() {
         // get csrf token
         $this->crawler = $this->client->request('GET', $this->responsavel_endpoint);
@@ -76,13 +96,15 @@ class SUAPClient
             'csrfmiddlewaretoken' => $token
         ]);
 
-        //var_dump($this->crawler->html());
-
         // set matricula
         $info = $this->crawler->filter('table[class="info"]');
         $this->matricula = trim($info->filter('td')->eq(5)->text());
     }
 
+
+    /**
+    *  Get this instance ID
+    **/
     public function getMatricula() {
         if (! $this->matricula) {
             $this->doLogin();
@@ -91,64 +113,185 @@ class SUAPClient
         return $this->matricula;
     }
 
+    /**
+    *  Return the information for all courses for the specified period/year (default = last period)
+    *  @ano_periodo: string for the desired period
+    **/
     public function getGrades($ano_periodo = '') {
         // $ano_periodo no formato yyyy_p (ex.: 2015_1)
         if (! $this->matricula) {
             $this->doLogin();
         }
 
-        // go to grades page
+        // Go to the report card page.
         $this->crawler = $this->client->request('GET', $this->aluno_endpoint . $this->matricula . '/?tab=boletim' . '&ano_periodo=' . $ano_periodo);
 
-        // get and manipulate grades table
+        // Find grades table.
         $grades = $this->crawler->filter('table[class="borda"]');
         $grade_rows = $grades->filter('tbody > tr');
 
-        // course data
+        // Will store course data;
         $data = [];
 
-        // iterate over courses
+        // Loop through course data.
         for ($i = 0; $i < $grade_rows->count(); $i++) {
 
             $course_data = [];
+
+            // Get the row from the crawler.
             $grade_row = $grades->filter('tbody > tr')->eq($i);
 
-            // trim white spaces before diary
+            // Trim white spaces before diary.
             $course_data['diario'] = (int) trim($grade_row->filter('td')->eq(0)->text()) ? (int) trim($grade_row->filter('td')->eq(0)->text()) : null;
 
-            // explode course name and code from the same field
+            // Explode course name and code from the same field.
             $namecode = explode(" - ", $grade_row->filter('td')->eq(1)->text());
 
-            // course code without name
+            // Course code without name.
             $course_data['codigo'] = trim($namecode[0]);
 
-            // course name without course code
+            // Course name without course code.
             $course_data['disciplina'] = trim($namecode[1]);
 
-            // get total class-hours for the course
+            // Get total class-hours for the course.
             $course_data['carga_horaria'] = (int) $grade_row->filter('td')->eq(2)->text() ? (int) $grade_row->filter('td')->eq(2)->text() : null;
 
-            // number or classes given
+            // Number or classes given.
             $course_data['aulas'] = (int) $grade_row->filter('td')->eq(3)->text() ? (int) $grade_row->filter('td')->eq(3)->text() : null;
-            $course_data['faltas'] = (int) $grade_row->filter('td')->eq(4)->text() ? (int) $grade_row->filter('td')->eq(4)->text() : null;
-            $course_data['frequencia'] = (int) $grade_row->filter('td')->eq(5)->text() ? (int) $grade_row->filter('td')->eq(5)->text() : null;
-            $course_data['situacao'] = strtolower($grade_row->filter('td')->eq(6)->text()) ? strtolower($grade_row->filter('td')->eq(6)->text()) : null;
-            $course_data['bm1_nota'] = (int) $grade_row->filter('td')->eq(7)->text() ? (int) $grade_row->filter('td')->eq(7)->text() : null;
-            $course_data['bm1_faltas'] = (int) $grade_row->filter('td')->eq(8)->text() ? (int) $grade_row->filter('td')->eq(8)->text() : null;
-            $course_data['bm2_nota'] = (int) $grade_row->filter('td')->eq(9)->text() ? (int) $grade_row->filter('td')->eq(9)->text() : null;
-            $course_data['bm2_faltas'] = (int) $grade_row->filter('td')->eq(10)->text() ? (int) $grade_row->filter('td')->eq(10)->text() : null;
-            $course_data['media'] = (int) $grade_row->filter('td')->eq(11)->text() ? (int) $grade_row->filter('td')->eq(11)->text() : null;
-            $course_data['naf_nota'] = (int) $grade_row->filter('td')->eq(12)->text() ? (int) $grade_row->filter('td')->eq(12)->text() : null;
-            $course_data['naf_faltas'] = (int) $grade_row->filter('td')->eq(13)->text() ? (int) $grade_row->filter('td')->eq(13)->text() : null;
-            $course_data['mfd'] = (int) $grade_row->filter('td')->eq(14)->text() ? (int) $grade_row->filter('td')->eq(14)->text() : null;
 
-            // push data into the $data array
+            // Absences.
+            $course_data['faltas'] = (int) $grade_row->filter('td')->eq(4)->text() ? (int) $grade_row->filter('td')->eq(4)->text() : null;
+
+            // Attendance.
+            $course_data['frequencia'] = (int) $grade_row->filter('td')->eq(5)->text() ? (int) $grade_row->filter('td')->eq(5)->text() : null;
+
+            // Situation.
+            $course_data['situacao'] = strtolower($grade_row->filter('td')->eq(6)->text()) ? strtolower($grade_row->filter('td')->eq(6)->text()) : null;
+
+            // First bimester, grade.
+            try {
+                $course_data['bm1_nota'] = (int) $grade_row->filter('td')->eq(7)->text() ? (int) $grade_row->filter('td')->eq(7)->text() : null;
+            } catch (\Exception $e) {
+                $course_data['bm1_nota'] = null;
+            }
+
+            // First bimester, absences.
+            try {
+                $course_data['bm1_faltas'] = (int) $grade_row->filter('td')->eq(8)->text() ? (int) $grade_row->filter('td')->eq(8)->text() : null;
+            } catch (\Exception $e) {
+                $course_data['bm1_faltas'] = null;
+            }
+
+            // Second bimester, grade.
+            try {
+                $course_data['bm2_nota'] = (int) $grade_row->filter('td')->eq(9)->text() ? (int) $grade_row->filter('td')->eq(9)->text() : null;
+            } catch (\Exception $e) {
+                $course_data['bm2_nota'] = null;
+            }
+
+            // Second bimester, absences.
+            try {
+                $course_data['bm2_faltas'] = (int) $grade_row->filter('td')->eq(10)->text() ? (int) $grade_row->filter('td')->eq(10)->text() : null;
+            } catch (\Exception $e) {
+
+            }
+
+            // Average (grade).
+            try {
+                $course_data['media'] = (int) $grade_row->filter('td')->eq(11)->text() ? (int) $grade_row->filter('td')->eq(11)->text() : null;
+            } catch (\Exception $e) {
+                $course_data['media'] = null;
+            }
+
+            // NAF Grade.
+            try {
+                $course_data['naf_nota'] = (int) $grade_row->filter('td')->eq(12)->text() ? (int) $grade_row->filter('td')->eq(12)->text() : null;
+            } catch (\Exception $e) {
+                $course_data['naf_nota'] = null;
+            }
+
+            // NAF absences.
+            try {
+                $course_data['naf_faltas'] = (int) $grade_row->filter('td')->eq(13)->text() ? (int) $grade_row->filter('td')->eq(13)->text() : null;
+            } catch (\Exception $e) {
+                $course_data['naf_faltas'] = null;
+            }
+
+            // Final grade.
+            try {
+                $course_data['mfd'] = (int) $grade_row->filter('td')->eq(14)->text() ? (int) $grade_row->filter('td')->eq(14)->text() : null;
+            } catch (\Exception $e) {
+                $course_data['mfd'] = null;
+            }
+
+            // Push data into the $data array.
             array_push($data, $course_data);
         }
 
         return $data;
     }
 
+    /**
+    *  Returns a lists of all courses for the specified period/year (default = last period)
+    *  @ano_periodo: string for the desired period
+    **/
+    public function getCourses($ano_periodo = ''){
+        // $ano_periodo no formato yyyy_p (ex.: 2015_1)
+        if (! $this->matricula) {
+            $this->doLogin();
+        }
+        // Go to grades page.
+        $this->crawler = $this->client->request('GET', $this->aluno_endpoint . $this->matricula . '/?tab=boletim' . '&ano_periodo=' . $ano_periodo);
+        // Get a crawler for the grades table.
+        $grades = $this->crawler->filter('table[class="borda"]');
+        $grade_rows = $grades->filter('tbody > tr');
+        // Course data.
+        $data = [];
+
+        for ($i = 0; $i < $grade_rows->count(); $i++) {
+          $course_data = [];
+          $grade_row = $grades->filter('tbody > tr')->eq($i);
+
+          // Explode course name and code from the same field.
+          $namecode = explode(" - ", $grade_row->filter('td')->eq(1)->text());
+          // Course code without name.
+          $course_data['codigo'] = trim($namecode[0]);
+          // Course name without course code.
+          $course_data['disciplina'] = trim($namecode[1]);
+
+          array_push($data, $course_data);
+        }
+
+        return $data;
+    }
+
+    /**
+    *  Gets the info for a specified course and period.
+    **/
+    public function getCourseData($course_code = "", $ano_periodo = ''){
+        // Uses getGrades function as helper.
+        $courses = $this->getGrades($ano_periodo);
+        $data = [];
+
+        if ($course_code != ""){
+            // Loop through courses to find a specific one.
+            foreach ($courses as $course) {
+                if ($course['codigo'] == $course_code){
+                    $data = $course;
+                }
+            }
+        } else {
+            // Gets the first one in the list.
+            $data = $courses[0];
+        }
+
+        return $data;
+    }
+
+
+    /**
+    *  Gets student data.
+    **/
     public function getStudentData() {
         if (! $this->matricula) {
             $this->doLogin();
@@ -162,17 +305,20 @@ class SUAPClient
         // General data
         $info = $this->crawler->filter('table[class="info"]');
 
+        // Personal data.
         $data['nome'] = trim($info->filter('td')->eq(1)->text());
+        $data['cpf'] = trim($info->filter('td')->eq(9)->text());
+
+        // Academic data.
         $data['situacao'] = trim($info->filter('td')->eq(3)->text());
         $data['matricula'] = trim($info->filter('td')->eq(5)->text());
         $data['ingresso'] = trim($info->filter('td')->eq(7)->text());
-        $data['cpf'] = trim($info->filter('td')->eq(9)->text());
         $data['periodo_referencia'] = (int) trim($info->filter('td')->eq(11)->text());
         $data['ira'] = trim($info->filter('td')->eq(13)->text());
         $data['curso'] = trim($info->filter('td')->eq(15)->text());
         $data['matriz'] = trim($info->filter('td')->eq(17)->text());
 
-        // Contact info
+        // Contact info.
         $contact_info = $this->crawler->filter('.box')->eq(4);
 
         $data['email_academico'] = trim($contact_info->filter('td')->eq(3)->text());
