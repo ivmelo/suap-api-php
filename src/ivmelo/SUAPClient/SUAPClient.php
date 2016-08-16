@@ -305,11 +305,11 @@ class SUAPClient
         // Uses getGrades function as helper.
         $courses = $this->getGrades($ano_periodo);
         // removes trailing white spaces and sets regex
-        $course_names = '/'.str_replace(' ', ' | ', trim($course_names)).'/'
+        $course_names = '/'.str_replace(' ', '|', strtolower(trim($course_names))).'/'
         $data = [];
 
         foreach ($courses as $course) {
-            if ( preg_match($course_names, $course['disciplina']) ){
+            if ( preg_match($course_names, strtolower($course['disciplina'])) ){
                 array_push($data, $course)
             }
         }
