@@ -11,14 +11,14 @@ It shows grades, attendance and courses.
 This package is available through composer.
 
 Add this to your composer.json and run `composer update`
-```
+```json
 "require": {
-    "ivmelo/suapclient": "@dev"
+    "ivmelo/suapclient": "^0.0.1"
 }
 ```
 
 ### Usage
-```
+```php
 $suap_client = SUAPClient('student_id', 'suap_password');
 // or
 $suap_client = SUAPClient();
@@ -30,12 +30,12 @@ You can also use your _responsável_ access key (chave de acesso), which can be 
 It's located in the 'Dados Gerais' session.
 
 Please notice that if using an access key, you need to suply "true" to the third argument in the constructor.
-```
+```php
 $suap_client = SUAPClient('student_id', 'access_key', true);
 ```
 
 #### Getting course data.
-```
+```php
 $grades = $suap_client->getGrades();
 ```
 
@@ -108,7 +108,7 @@ Array
 ```
 
 #### Getting student data
-```
+```php
 $grades = $suap_client->getStudentData();
 ```
 
