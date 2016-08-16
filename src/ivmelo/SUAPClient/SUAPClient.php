@@ -18,8 +18,11 @@ class SUAPClient
     private $is_access_code = false;
 
     /**
-    * Construct function
-    **/
+     * Construct function
+     * @param string  $username       Matricula
+     * @param string  $password       User's password
+     * @param boolean $is_access_code Wheter use access code
+     */
     function __construct($username = null, $password = null, $is_access_code = false)
     {
         if ($username && $password) {
@@ -32,13 +35,12 @@ class SUAPClient
         $this->client = new Client();
     }
 
-
     /**
-    * Sets the credetials for this instance
-    *  @username: matricula
-    *  @password: suap password
-    *  @is_access_code: boolean (access key)
-    **/
+     * Sets the credetials for this instance
+     * @param string $username       Matricula
+     * @param string $password       User's password
+     * @param boolean $is_access_code Wheter use access code
+     */
     public function setCredentials($username, $password, $is_access_code) {
         $this->username = $username;
         $this->password = $password;
@@ -46,8 +48,8 @@ class SUAPClient
     }
 
     /**
-    *  Does login for both cases (password or access key)
-    **/
+     * Does login for both cases (password or access key)
+     */
     public function doLogin() {
         if ($this->is_access_code)
             $this->doResponsavelLogin();
@@ -78,7 +80,6 @@ class SUAPClient
         $this->matricula = $link_parts[5];
     }
 
-
     /**
     *  Does login with ID and access key
     **/
@@ -101,7 +102,6 @@ class SUAPClient
         $this->matricula = trim($info->filter('td')->eq(5)->text());
     }
 
-
     /**
     *  Get this instance ID
     **/
@@ -114,9 +114,11 @@ class SUAPClient
     }
 
     /**
-    *  Return the information for all courses for the specified period/year (default = last period)
-    *  @ano_periodo: string for the desired period
-    **/
+     * Return the information for all courses for the specified 
+     * period/year (default = last period)
+     * @param  string $ano_periodo Desired period
+     * @return array               Course list
+     */
     public function getGrades($ano_periodo = '') {
         // $ano_periodo no formato yyyy_p (ex.: 2015_1)
         if (! $this->matricula) {
@@ -232,9 +234,10 @@ class SUAPClient
     }
 
     /**
-    *  Returns a lists of all courses for the specified period/year (default = last period)
-    *  @ano_periodo: string for the desired period
-    **/
+     * Returns a lists of all courses for the specified period/year (default = last period)
+     * @param  string $ano_periodo Desired period
+     * @return array               Course list
+     */
     public function getCourses($ano_periodo = ''){
         // $ano_periodo no formato yyyy_p (ex.: 2015_1)
         if (! $this->matricula) {
@@ -266,8 +269,11 @@ class SUAPClient
     }
 
     /**
-    *  Gets the info for a specified course and period.
-    **/
+     * Gets the info for a specified course and period.
+     * @param  string $course_code Course code
+     * @param  string $ano_periodo Desired period
+     * @return array               Course list
+     */
     public function getCourseData($course_code = "", $ano_periodo = ''){
         // Uses getGrades function as helper.
         $courses = $this->getGrades($ano_periodo);
@@ -288,6 +294,27 @@ class SUAPClient
         return $data;
     }
 
+    /**
+     * Returns a list of courses filtered by name
+     * @param  string $ano_periodo  Desired period
+     * @param  string $course_names List of course names
+     * @return array                List of filtered courses
+     */
+    public function filterCoursesByName($ano_periodo = '', $course_names)
+    {
+        // Uses getGrades function as helper.
+        $courses = $this->getGrades($ano_periodo);
+        // removes trailing white spaces and sets regex
+        $course_names = '/'.str_replace(' ', ' | ', trim($course_names)).'/'
+        $data = [];
+
+        foreach ($courses as $course) {
+            if ( preg_match($course_names, $course['disciplina']) ){
+                array_push($data, $course)
+            }
+        }
+        return $data;
+    }
 
     /**
     *  Gets student data.
