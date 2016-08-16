@@ -21,7 +21,7 @@ class SUAPClient
      * Construct function
      * @param string  $username       Matricula
      * @param string  $password       User's password
-     * @param boolean $is_access_code Wheter use access code
+     * @param boolean $is_access_code Whether use access code
      */
     function __construct($username = null, $password = null, $is_access_code = false)
     {
@@ -39,7 +39,7 @@ class SUAPClient
      * Sets the credetials for this instance
      * @param string $username       Matricula
      * @param string $password       User's password
-     * @param boolean $is_access_code Wheter use access code
+     * @param boolean $is_access_code Whether use access code
      */
     public function setCredentials($username, $password, $is_access_code) {
         $this->username = $username;
