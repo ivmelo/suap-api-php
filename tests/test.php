@@ -18,10 +18,10 @@ try {
 
     $client = new SUAPClient($student_id, $suap_key, true);
 
-    // print_r($client->getGrades());
-    // print_r($client->getStudentData());
-    // print_r($client->getCourses());
-    // print_r($client->getCourseData('TEC.0077'));
+    print_r($client->getGrades());
+    print_r($client->getStudentData());
+    print_r($client->getCourses());
+    print_r($client->getCourseData('TEC.0077'));
     print_r($client->filterCoursesByName('de'));
 } catch (Exception $e) {
     // Print error.

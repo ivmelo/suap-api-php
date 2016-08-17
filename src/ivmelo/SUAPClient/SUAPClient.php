@@ -138,10 +138,14 @@ class SUAPClient
         // Loop through course data.
         for ($i = 0; $i < $grade_rows->count(); $i++) {
 
+            // Web scraping sux. Pls, IF, kindly release Rest API. Thx.
             $course_data = [];
 
             // Get the row from the crawler.
             $grade_row = $grades->filter('tbody > tr')->eq($i);
+
+            // Get column count.
+            $columns = $grade_row->filter('td')->count();
 
             // Trim white spaces before diary.
             $course_data['diario'] = (int) trim($grade_row->filter('td')->eq(0)->text()) ? (int) trim($grade_row->filter('td')->eq(0)->text()) : null;
@@ -195,33 +199,80 @@ class SUAPClient
             try {
                 $course_data['bm2_faltas'] = (int) $grade_row->filter('td')->eq(10)->text() ? (int) $grade_row->filter('td')->eq(10)->text() : null;
             } catch (\Exception $e) {
+                $course_data['bm2_faltas'] = null;
+            }
 
+            // High school students might have 2 bimester or 4 bimester courses.
+            // That causes their report card to have more columns than the ones of college students.
+            // To deal with that, we'll create an $offset variable to adjust the node position accordingly.
+            $offset = 0;
+
+            if ($columns == 17){
+                // When they have a 2 bimester course, their report card have 17 colums.
+                // 16 Columns like college students, plus an empty column instead of bm3 and bm4.
+                $offset = 1;
+            } else if ($columns == 20) {
+                // When they have a 4 bimester course, their report card will have 20 columns.
+                // Well grab the bm3 and bm4 data here, and add an offset to get the rest of the info.
+                $offset = 4;
+
+                // Third bimester, grade.
+                try {
+                    $course_data['bm3_nota'] = (int) $grade_row->filter('td')->eq(11)->text() ? (int) $grade_row->filter('td')->eq(7)->text() : null;
+                } catch (\Exception $e) {
+                    $course_data['bm3_nota'] = null;
+                }
+
+                // Third bimester, absences.
+                try {
+                    $course_data['bm3_faltas'] = (int) $grade_row->filter('td')->eq(12)->text() ? (int) $grade_row->filter('td')->eq(8)->text() : null;
+                } catch (\Exception $e) {
+                    $course_data['bm3_faltas'] = null;
+                }
+
+                // Fourth bimester, grade.
+                try {
+                    $course_data['bm4_nota'] = (int) $grade_row->filter('td')->eq(13)->text() ? (int) $grade_row->filter('td')->eq(9)->text() : null;
+                } catch (\Exception $e) {
+                    $course_data['bm4_nota'] = null;
+                }
+
+                // Fourth bimester, absences.
+                try {
+                    $course_data['bm4_faltas'] = (int) $grade_row->filter('td')->eq(14)->text() ? (int) $grade_row->filter('td')->eq(10)->text() : null;
+                } catch (\Exception $e) {
+                    $course_data['bm4_faltas'] = null;
+                }
             }
 
             // Average (grade).
             try {
-                $course_data['media'] = (int) $grade_row->filter('td')->eq(11)->text() ? (int) $grade_row->filter('td')->eq(11)->text() : null;
+                $node_number = 11 + $offset;
+                $course_data['media'] = (int) $grade_row->filter('td')->eq($node_number)->text() ? (int) $grade_row->filter('td')->eq($node_number)->text() : null;
             } catch (\Exception $e) {
                 $course_data['media'] = null;
             }
 
             // NAF Grade.
             try {
-                $course_data['naf_nota'] = (int) $grade_row->filter('td')->eq(12)->text() ? (int) $grade_row->filter('td')->eq(12)->text() : null;
+                $node_number = 12 + $offset;
+                $course_data['naf_nota'] = (int) $grade_row->filter('td')->eq($node_number)->text() ? (int) $grade_row->filter('td')->eq($node_number)->text() : null;
             } catch (\Exception $e) {
                 $course_data['naf_nota'] = null;
             }
 
             // NAF absences.
             try {
-                $course_data['naf_faltas'] = (int) $grade_row->filter('td')->eq(13)->text() ? (int) $grade_row->filter('td')->eq(13)->text() : null;
+                $node_number = 13 + $offset;
+                $course_data['naf_faltas'] = (int) $grade_row->filter('td')->eq($node_number)->text() ? (int) $grade_row->filter('td')->eq($node_number)->text() : null;
             } catch (\Exception $e) {
                 $course_data['naf_faltas'] = null;
             }
 
             // Final grade.
             try {
-                $course_data['mfd'] = (int) $grade_row->filter('td')->eq(14)->text() ? (int) $grade_row->filter('td')->eq(14)->text() : null;
+                $node_number = 14 + $offset;
+                $course_data['mfd'] = (int) $grade_row->filter('td')->eq($node_number)->text() ? (int) $grade_row->filter('td')->eq($node_number)->text() : null;
             } catch (\Exception $e) {
                 $course_data['mfd'] = null;
             }
@@ -341,7 +392,7 @@ class SUAPClient
         $data['matricula'] = trim($info->filter('td')->eq(5)->text());
         $data['ingresso'] = trim($info->filter('td')->eq(7)->text());
         $data['periodo_referencia'] = (int) trim($info->filter('td')->eq(11)->text());
-        $data['ira'] = trim($info->filter('td')->eq(13)->text());
+        $data['ira'] = floatval(str_replace(',', '.', trim($info->filter('td')->eq(13)->text())));
         $data['curso'] = trim($info->filter('td')->eq(15)->text());
         $data['matriz'] = trim($info->filter('td')->eq(17)->text());
 
