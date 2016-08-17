@@ -30,14 +30,14 @@ $ composer require "ivmelo/suapclient": "^0.0.1"
 ```
 
 ### Uso
-Você pode instanciar um cliente usando a matrícula do aluno e a senha ou a chave de acesso do responsável do mesmo.
+Você pode instanciar um cliente usando a matrícula do aluno e a senha ou a chave de acesso do responsável.
 
 ```php
 $suap_client = SUAPClient('matricula', 'senha');
 ```
 ou ainda
 
-```
+```php
 $suap_client = SUAPClient('matricula', 'chave_de_acesso', true);
 ```
 Repare que ao usar a chave de acesso, você precisa passar ```true``` como terceiro parâmetro do construtor.
