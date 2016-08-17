@@ -31,7 +31,7 @@ class SUAPClient
             $this->is_access_code = $is_access_code;
         }
 
-        // guzzle client
+        // Guzzle client
         $this->client = new Client();
     }
 
@@ -114,7 +114,7 @@ class SUAPClient
     }
 
     /**
-     * Return the information for all courses for the specified 
+     * Return the information for all courses for the specified
      * period/year (default = last period)
      * @param  string $ano_periodo Desired period
      * @return array               Course list
@@ -300,17 +300,17 @@ class SUAPClient
      * @param  string $course_names List of course names
      * @return array                List of filtered courses
      */
-    public function filterCoursesByName($ano_periodo = '', $course_names)
+    public function filterCoursesByName($course_names, $ano_periodo = '')
     {
         // Uses getGrades function as helper.
         $courses = $this->getGrades($ano_periodo);
         // removes trailing white spaces and sets regex
-        $course_names = '/'.str_replace(' ', '|', strtolower(trim($course_names))).'/'
+        $course_names = '/'.str_replace(' ', '|', strtolower(trim($course_names))).'/';
         $data = [];
 
         foreach ($courses as $course) {
             if ( preg_match($course_names, strtolower($course['disciplina'])) ){
-                array_push($data, $course)
+                array_push($data, $course);
             }
         }
         return $data;

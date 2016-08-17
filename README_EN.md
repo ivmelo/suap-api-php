@@ -1,59 +1,47 @@
 # SUAPClient
-Uma Cliente PHP para o SUAP (Sistema Unificado de Administração Publica).
+A PHP client for SUAP (Sistema Unificado de Administração Publica).
 
-For documentation in English click here. (No longer updated).
+This package allows you to access data from SUAP. (https://suap.ifrn.edu.br/)
 
-Este pacote permite que você tenha acesso aos dados do SUAP na sua aplicação. (https://suap.ifrn.edu.br/)
+It shows grades, attendance and courses.
 
-É o componente principal do [SUAP Bot](https://telegram.me/suapbot).
+**All pull requests should be made to the ```dev``` branch!**
 
-Atualmente fornece informações de boletim (notas, frequência, cursos) e dados do aluno com alguns filtros e buscas simples. Funciona apenas no SUAP do IFRN, porém com um pouco de adaptação, pode funcionar no SUAP de outros IF's também.
+### Instalation
+This package is available through composer.
 
-Ele faz [scraping](https://en.wikipedia.org/wiki/Web_scraping) nas páginas do SUAP em busca dos dados desejados. Porém no futuro pretende-se usar a API REST do SUAP que _segundo informações_, está em desenvolvimento.
-
-**Todos os _Pull Requests_ devem ser feitos para a branch ```dev```!**
-
-### Instalação
-Este pacote está disponível através do composer.
-
-Adicione a dependência abaixo no composer.json e execute ```composer update```.
-
+Add this to your composer.json and run `composer update`
 ```json
 "require": {
     "ivmelo/suapclient": "^0.0.1"
 }
 ```
-Alternativamente, você pode instalar direto pela linha de comando:
 
-```bash
-$ composer require "ivmelo/suapclient": "^0.0.1"
-```
-
-### Uso
-Você pode instanciar um cliente usando a matrícula do aluno e a senha ou a chave de acesso do responsável do mesmo.
-
+### Usage
 ```php
-$suap_client = SUAPClient('matricula', 'senha');
+$suap_client = SUAPClient('student_id', 'suap_password');
+// or
+$suap_client = SUAPClient();
+$suap_client->setCredentials('student_id', 'suap_password');
 ```
-ou ainda
 
+You can also use your _responsável_ access key (chave de acesso), which can be found under the 'Dados Pessoais' tab in your suap account.
+
+It's located in the 'Dados Gerais' session.
+
+Please notice that if using an access key, you need to suply "true" to the third argument in the constructor.
+```php
+$suap_client = SUAPClient('student_id', 'access_key', true);
 ```
-$suap_client = SUAPClient('matricula', 'chave_de_acesso', true);
-```
-Repare que ao usar a chave de acesso, você precisa passar ```true``` como terceiro parâmetro do construtor.
 
-
-
-### Boletim
-Para receber dados do boletim do aluno, basta instanciar um cliente e chamar o método ```getGrades();```
-
+#### Getting course data.
 ```php
 $grades = $suap_client->getGrades();
 ```
 
-A saída será um array com informações sobre a disciplina encontradas no boletim do aluno.
+The output will be an array with course information.
 
-```php
+```
 Array
 (
     [0] => Array
@@ -119,14 +107,12 @@ Array
 
 ```
 
-### Dados do Aluno
-Para receber dados do aluno, basta chamar o método ```getStudentData();```.
-
+#### Getting student data
 ```php
 $grades = $suap_client->getStudentData();
 ```
 
-A saída será um array com informações básicas do estudante e do curso.
+The output will be an array with student information.
 
 ```
 Array
@@ -147,11 +133,11 @@ Array
 
 ```
 
-### Massa! Como isso funciona?
-O cliente utiliza um cliente HTTP para fazer os requests ao SUAP, e um DOM Parser para _minerar_ as informações relevantes das páginas HTML.
+## How does it work?
+It uses a web crawler to go through the HTML page and grab the relevant information.
 
-## TODO:
-1. Informações do Aluno; [DONE]
-1. Histórico do Aluno;
-1. Horário e Local de Aulas;
-1. Usar chave de acesso em vez de senha do aluno [DONE].
+## TODO List
+1. Get student info; [DONE]
+1. Get history;
+1. Class schedule and location;
+1. Use the student access code instead of the SUAP password.
