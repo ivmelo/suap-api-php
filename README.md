@@ -1,7 +1,7 @@
 # SUAPClient
-Uma Cliente PHP para o SUAP (Sistema Unificado de Administração Publica).
+Um cliente PHP para o SUAP (Sistema Unificado de Administração Publica).
 
-For documentation in English click here. (No longer updated).
+For documentation in English [click here](https://github.com/ivmelo/suap-client/blob/master/README_EN.md). (No longer updated).
 
 Este pacote permite que você tenha acesso aos dados do SUAP na sua aplicação. (https://suap.ifrn.edu.br/)
 
@@ -148,7 +148,7 @@ Array
 ```
 
 ### Massa! Como isso funciona?
-O cliente utiliza um cliente HTTP para fazer os requests ao SUAP, e um DOM Parser para _minerar_ as informações relevantes das páginas HTML.
+A biblioteca utiliza um cliente HTTP para fazer os requests ao SUAP, e um DOM Parser para _minerar_ as informações relevantes das páginas HTML.
 
 ## TODO:
 1. Informações do Aluno; [DONE]
