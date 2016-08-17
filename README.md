@@ -137,7 +137,7 @@ Array
     [ingresso] => 2012/1
     [cpf] => 123.456.789-00
     [periodo_referencia] => 4
-    [ira] => 90,00
+    [ira] => 90.00
     [curso] => 01404 - Tecnologia em Análise e Desenvolvimento de Sistemas (2012) - Campus Natal-Central (CAMPUS NATAL - CENTRAL)
     [matriz] => 91 - Tecnologia em Análise e Desenvolvimento de Sistemas (2012)
     [email_academico] => fulano.dasilva@academico.ifrn.edu.br
