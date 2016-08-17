@@ -128,7 +128,7 @@ $grades = $suap_client->getStudentData();
 
 A saída será um array com informações básicas do estudante e do curso.
 
-```
+```php
 Array
 (
     [nome] => Fulano da Silva
@@ -148,9 +148,9 @@ Array
 ```
 
 ### Massa! Como isso funciona?
-A biblioteca utiliza um cliente HTTP para fazer os requests ao SUAP, e um DOM Parser para _minerar_ as informações relevantes das páginas HTML.
+A biblioteca utiliza um cliente HTTP para fazer os requests ao SUAP, e um DOM Parser para procurar e extrair as informações relevantes das páginas HTML.
 
-## TODO:
+### TODO:
 1. Informações do Aluno; [DONE]
 1. Histórico do Aluno;
 1. Horário e Local de Aulas;
