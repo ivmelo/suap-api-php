@@ -114,6 +114,65 @@ class SUAPClient
     }
 
     /**
+     * Return class information, schedule and location
+     * @param  string   day     Day of the week (mon\tue\wed\thu|fri|sat|sun)
+     * @return array    Class info
+     */
+    public function getClasses() {
+        // $ano_periodo no formato yyyy_p (ex.: 2015_1)
+        if (! $this->matricula) {
+            $this->doLogin();
+        }
+
+        // Go to the report card page.
+        $this->crawler = $this->client->request('GET', $this->aluno_endpoint . $this->matricula . '/?tab=locais_aula_aluno' . '&ano_periodo=' . $ano_periodo);
+
+        $courses_data = $this->getCoursesData($this->crawler);
+
+        return $courses_data;
+    }
+
+    private function getCoursesData($crawler) {
+        $courses = $crawler->filter('table')->eq(1);
+
+        //print_r($courses);
+
+        $data = [];
+
+        for ($i = 0; $i < $courses->filter('tbody > tr')->count(); $i++) {
+            $class_row = $courses->filter('tbody > tr')->eq($i);
+            $class_data = [];
+
+            // Diary, will be used as key.
+            $class_data['diario'] = trim($class_row->filter('td')->eq(0)->text());
+
+            // Component data.
+            $componente = trim($class_row->filter('td dd')->eq(0)->text());
+            $componente_data = explode(' - ', $componente);
+
+            $class_data['codigo'] = $componente_data[0];
+            $class_data['disciplina'] = $componente_data[1];
+            $class_data['tipo'] = $componente_data[2];
+
+            // Not every course has registered instructors. Some course are assigned instructors later.
+            try {
+                $class_data['professores'] = array_map('trim', explode(',', trim($class_row->filter('td dd')->eq(1)->text())));
+            } catch (\Exception $e) {
+                $class_data['professores'] = [];
+            }
+
+            // Local, diario...
+            $class_data['local'] = trim($class_row->filter('td')->eq(2)->text());
+            $class_data['horario'] = trim($class_row->filter('td')->eq(3)->text());
+
+            // Use diario as array key.
+            $data[$class_data['codigo']] = $class_data;
+        }
+
+        return $data;
+    }
+
+    /**
      * Return the information for all courses for the specified
      * period/year (default = last period)
      * @param  string $ano_periodo Desired period
