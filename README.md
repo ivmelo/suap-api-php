@@ -4,6 +4,7 @@
 [![Latest Stable Version](https://poser.pugx.org/ivmelo/suapclient/v/stable)](https://packagist.org/packages/ivmelo/suapclient)
 [![Total Downloads](https://poser.pugx.org/ivmelo/suapclient/downloads)](https://packagist.org/packages/ivmelo/suapclient)
 [![License](https://poser.pugx.org/ivmelo/suapclient/license)](https://packagist.org/packages/ivmelo/suapclient)
+[![Safadão](https://img.shields.io/badge/safadão-aprova-yellowgreen.svg)](https://img.shields.io/badge/safadão-aprova-yellowgreen.svg)
 
 Um cliente PHP para o SUAP (Sistema Unificado de Administração Publica).
 
