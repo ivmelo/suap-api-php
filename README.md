@@ -1,4 +1,10 @@
-# SUAPClient [![SensioLabsInsight](https://insight.sensiolabs.com/projects/cca1ac97-8137-4887-86f1-78c927125cbd/mini.png)](https://insight.sensiolabs.com/projects/cca1ac97-8137-4887-86f1-78c927125cbd)
+# SUAPClient
+
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/cca1ac97-8137-4887-86f1-78c927125cbd/mini.png)](https://insight.sensiolabs.com/projects/cca1ac97-8137-4887-86f1-78c927125cbd)
+[![Latest Stable Version](https://poser.pugx.org/ivmelo/suapclient/v/stable)](https://packagist.org/packages/ivmelo/suapclient)
+[![Total Downloads](https://poser.pugx.org/ivmelo/suapclient/downloads)](https://packagist.org/packages/ivmelo/suapclient)
+[![License](https://poser.pugx.org/ivmelo/suapclient/license)](https://packagist.org/packages/ivmelo/suapclient)
+
 Um cliente PHP para o SUAP (Sistema Unificado de Administração Publica).
 
 For documentation in English [click here](https://github.com/ivmelo/suap-client/blob/master/README_EN.md). (No longer updated).
