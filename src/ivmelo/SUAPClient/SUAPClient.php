@@ -1,6 +1,7 @@
 <?php namespace Ivmelo\SUAPClient;
 
 use Goutte\Client;
+use Symfony\Component\DomCrawler\Crawler;
 
 /**
  * SUAPClient. Get data from SUAP.
@@ -132,7 +133,7 @@ class SUAPClient
         return $courses_data;
     }
 
-    private function getCoursesData($crawler) {
+    private function getCoursesData(Crawler $crawler) {
         $courses = $crawler->filter('table')->eq(1);
 
         $data = [];

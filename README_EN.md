@@ -136,7 +136,7 @@ Array
 ## How does it work?
 It uses a web crawler to go through the HTML page and grab the relevant information.
 
-## TODO List
+## Things to do:
 1. Get student info; [DONE]
 1. Get history;
 1. Class schedule and location;

@@ -150,7 +150,7 @@ Array
 ### Massa! Como isso funciona?
 A biblioteca utiliza um cliente HTTP para fazer os requests ao SUAP, e um DOM Parser para procurar e extrair as informações relevantes das páginas HTML.
 
-### TODO:
+### Coisas a Fazer:
 1. Informações do Aluno; [DONE]
 1. Histórico do Aluno;
 1. Horário e Local de Aulas;
