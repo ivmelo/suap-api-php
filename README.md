@@ -1,6 +1,7 @@
 # SUAPClient
 
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/cca1ac97-8137-4887-86f1-78c927125cbd/mini.png)](https://insight.sensiolabs.com/projects/cca1ac97-8137-4887-86f1-78c927125cbd)
+[![StyleCI](https://styleci.io/repos/64276422/shield)](https://styleci.io/repos/64276422)
 [![Latest Stable Version](https://poser.pugx.org/ivmelo/suapclient/v/stable)](https://packagist.org/packages/ivmelo/suapclient)
 [![Total Downloads](https://poser.pugx.org/ivmelo/suapclient/downloads)](https://packagist.org/packages/ivmelo/suapclient)
 [![License](https://poser.pugx.org/ivmelo/suapclient/license)](https://packagist.org/packages/ivmelo/suapclient)
