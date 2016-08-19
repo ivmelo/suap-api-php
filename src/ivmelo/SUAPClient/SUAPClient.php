@@ -23,7 +23,7 @@ class SUAPClient
      * @param string  $password       User's password
      * @param boolean $is_access_code Whether use access code
      */
-    function __construct($username = null, $password = null, $is_access_code = false)
+    public function __construct($username = null, $password = null, $is_access_code = false)
     {
         if ($username && $password) {
             $this->username = $username;
@@ -135,11 +135,11 @@ class SUAPClient
     private function getCoursesData($crawler) {
         $courses = $crawler->filter('table')->eq(1);
 
-        //print_r($courses);
-
         $data = [];
 
-        for ($i = 0; $i < $courses->filter('tbody > tr')->count(); $i++) {
+        $rows = $courses->filter('tbody > tr')->count();
+
+        for ($i = 0; $i < $rows; $i++) {
             $class_row = $courses->filter('tbody > tr')->eq($i);
             $class_data = [];
 
@@ -194,8 +194,11 @@ class SUAPClient
         // Will store course data;
         $data = [];
 
+        // Rows count.
+        $rows = $grade_rows->count();
+
         // Loop through course data.
-        for ($i = 0; $i < $grade_rows->count(); $i++) {
+        for ($i = 0; $i < $rows; $i++) {
 
             // Web scraping sux. Pls, IF, kindly release Rest API. Thx.
             $course_data = [];
@@ -361,7 +364,10 @@ class SUAPClient
         // Course data.
         $data = [];
 
-        for ($i = 0; $i < $grade_rows->count(); $i++) {
+        // Count rows.
+        $rows = $grade_rows->count();
+
+        for ($i = 0; $i < $rows; $i++) {
           $course_data = [];
           $grade_row = $grades->filter('tbody > tr')->eq($i);
 
