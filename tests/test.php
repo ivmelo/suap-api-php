@@ -1,6 +1,6 @@
 <?php
 
-require dirname(__DIR__) . '/vendor/autoload.php';
+require dirname(__DIR__).'/vendor/autoload.php';
 
 use ivmelo\SUAPClient\SUAPClient;
 
@@ -27,5 +27,5 @@ try {
     // print_r($client->getClasses());
 } catch (Exception $e) {
     // Print error.
-    print($e);
+    echo $e;
 }
