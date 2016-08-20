@@ -26,5 +26,5 @@ try {
     // print_r($client->getClasses());
 } catch (Exception $e) {
     // Print error.
-    print($e);
+    echo $e;
 }

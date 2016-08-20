@@ -1,4 +1,6 @@
-<?php namespace Ivmelo\SUAPClient;
+<?php
+
+namespace Ivmelo\SUAPClient;
 
 use Goutte\Client;
 use Symfony\Component\DomCrawler\Crawler;
@@ -19,10 +21,11 @@ class SUAPClient
     private $is_access_code = false;
 
     /**
-     * Construct function
-     * @param string  $username       Matricula
-     * @param string  $password       User's password
-     * @param boolean $is_access_code Whether use access code
+     * Construct function.
+     *
+     * @param string $username       Matricula
+     * @param string $password       User's password
+     * @param bool   $is_access_code Whether use access code
      */
     public function __construct($username = null, $password = null, $is_access_code = false)
     {
@@ -37,31 +40,36 @@ class SUAPClient
     }
 
     /**
-     * Sets the credetials for this instance
+     * Sets the credetials for this instance.
+     *
      * @param string $username       Matricula
      * @param string $password       User's password
-     * @param boolean $is_access_code Whether use access code
+     * @param bool   $is_access_code Whether use access code
      */
-    public function setCredentials($username, $password, $is_access_code) {
+    public function setCredentials($username, $password, $is_access_code)
+    {
         $this->username = $username;
         $this->password = $password;
         $this->is_access_code = $is_access_code;
     }
 
     /**
-     * Does login for both cases (password or access key)
+     * Does login for both cases (password or access key).
      */
-    public function doLogin() {
-        if ($this->is_access_code)
+    public function doLogin()
+    {
+        if ($this->is_access_code) {
             $this->doResponsavelLogin();
-        else
+        } else {
             $this->doAlunoLogin();
+        }
     }
 
     /**
-    *  Does login with ID and password
-    **/
-    public function doAlunoLogin() {
+     *  Does login with ID and password.
+     **/
+    public function doAlunoLogin()
+    {
         // get csrf token
         $this->crawler = $this->client->request('GET', $this->endpoint);
         $token = $this->crawler->filter('input[name="csrfmiddlewaretoken"]');
@@ -70,9 +78,9 @@ class SUAPClient
         // get form and submit
         $form = $this->crawler->selectButton('Acessar')->form();
         $this->crawler = $this->client->submit($form, [
-            'username' => $this->username,
-            'password' => $this->password,
-            'csrfmiddlewaretoken' => $token
+            'username'            => $this->username,
+            'password'            => $this->password,
+            'csrfmiddlewaretoken' => $token,
         ]);
 
         // get matricula number
@@ -82,9 +90,10 @@ class SUAPClient
     }
 
     /**
-    *  Does login with ID and access key
-    **/
-    public function doResponsavelLogin() {
+     *  Does login with ID and access key.
+     **/
+    public function doResponsavelLogin()
+    {
         // get csrf token
         $this->crawler = $this->client->request('GET', $this->responsavel_endpoint);
         $token = $this->crawler->filter('input[name="csrfmiddlewaretoken"]');
@@ -93,9 +102,9 @@ class SUAPClient
         // get form and submit
         $form = $this->crawler->selectButton('Acessar')->form();
         $this->crawler = $this->client->submit($form, [
-            'matricula' => $this->username,
-            'chave' => $this->password,
-            'csrfmiddlewaretoken' => $token
+            'matricula'           => $this->username,
+            'chave'               => $this->password,
+            'csrfmiddlewaretoken' => $token,
         ]);
 
         // set matricula
@@ -104,10 +113,11 @@ class SUAPClient
     }
 
     /**
-    *  Get this instance ID
-    **/
-    public function getMatricula() {
-        if (! $this->matricula) {
+     *  Get this instance ID.
+     **/
+    public function getMatricula()
+    {
+        if (!$this->matricula) {
             $this->doLogin();
         }
 
@@ -115,25 +125,29 @@ class SUAPClient
     }
 
     /**
-     * Return class information, schedule and location
+     * Return class information, schedule and location.
+     *
      * @param  string   day     Day of the week (mon\tue\wed\thu|fri|sat|sun)
-     * @return array    Class info
+     *
+     * @return array Class info
      */
-    public function getClasses() {
+    public function getClasses()
+    {
         // $ano_periodo no formato yyyy_p (ex.: 2015_1)
-        if (! $this->matricula) {
+        if (!$this->matricula) {
             $this->doLogin();
         }
 
         // Go to the report card page.
-        $this->crawler = $this->client->request('GET', $this->aluno_endpoint . $this->matricula . '/?tab=locais_aula_aluno' . '&ano_periodo=' . $ano_periodo);
+        $this->crawler = $this->client->request('GET', $this->aluno_endpoint.$this->matricula.'/?tab=locais_aula_aluno'.'&ano_periodo='.$ano_periodo);
 
         $courses_data = $this->getCoursesData($this->crawler);
 
         return $courses_data;
     }
 
-    private function getCoursesData(Crawler $crawler) {
+    private function getCoursesData(Crawler $crawler)
+    {
         $courses = $crawler->filter('table')->eq(1);
 
         $data = [];
@@ -175,18 +189,21 @@ class SUAPClient
 
     /**
      * Return the information for all courses for the specified
-     * period/year (default = last period)
-     * @param  string $ano_periodo Desired period
-     * @return array               Course list
+     * period/year (default = last period).
+     *
+     * @param string $ano_periodo Desired period
+     *
+     * @return array Course list
      */
-    public function getGrades($ano_periodo = '') {
+    public function getGrades($ano_periodo = '')
+    {
         // $ano_periodo no formato yyyy_p (ex.: 2015_1)
-        if (! $this->matricula) {
+        if (!$this->matricula) {
             $this->doLogin();
         }
 
         // Go to the report card page.
-        $this->crawler = $this->client->request('GET', $this->aluno_endpoint . $this->matricula . '/?tab=boletim' . '&ano_periodo=' . $ano_periodo);
+        $this->crawler = $this->client->request('GET', $this->aluno_endpoint.$this->matricula.'/?tab=boletim'.'&ano_periodo='.$ano_periodo);
 
         // Find grades table.
         $grades = $this->crawler->filter('table[class="borda"]');
@@ -214,7 +231,7 @@ class SUAPClient
             $course_data['diario'] = (int) trim($grade_row->filter('td')->eq(0)->text()) ? (int) trim($grade_row->filter('td')->eq(0)->text()) : null;
 
             // Explode course name and code from the same field.
-            $namecode = explode(" - ", $grade_row->filter('td')->eq(1)->text());
+            $namecode = explode(' - ', $grade_row->filter('td')->eq(1)->text());
 
             // Course code without name.
             $course_data['codigo'] = trim($namecode[0]);
@@ -270,11 +287,11 @@ class SUAPClient
             // To deal with that, we'll create an $offset variable to adjust the node position accordingly.
             $offset = 0;
 
-            if ($columns == 17){
+            if ($columns == 17) {
                 // When they have a 2 bimester course, their report card have 17 colums.
                 // 16 Columns like college students, plus an empty column instead of bm3 and bm4.
                 $offset = 1;
-            } else if ($columns == 20) {
+            } elseif ($columns == 20) {
                 // When they have a 4 bimester course, their report card will have 20 columns.
                 // Well grab the bm3 and bm4 data here, and add an offset to get the rest of the info.
                 $offset = 4;
@@ -348,17 +365,20 @@ class SUAPClient
     }
 
     /**
-     * Returns a lists of all courses for the specified period/year (default = last period)
-     * @param  string $ano_periodo Desired period
-     * @return array               Course list
+     * Returns a lists of all courses for the specified period/year (default = last period).
+     *
+     * @param string $ano_periodo Desired period
+     *
+     * @return array Course list
      */
-    public function getCourses($ano_periodo = ''){
+    public function getCourses($ano_periodo = '')
+    {
         // $ano_periodo no formato yyyy_p (ex.: 2015_1)
-        if (! $this->matricula) {
+        if (!$this->matricula) {
             $this->doLogin();
         }
         // Go to grades page.
-        $this->crawler = $this->client->request('GET', $this->aluno_endpoint . $this->matricula . '/?tab=boletim' . '&ano_periodo=' . $ano_periodo);
+        $this->crawler = $this->client->request('GET', $this->aluno_endpoint.$this->matricula.'/?tab=boletim'.'&ano_periodo='.$ano_periodo);
         // Get a crawler for the grades table.
         $grades = $this->crawler->filter('table[class="borda"]');
         $grade_rows = $grades->filter('tbody > tr');
@@ -369,17 +389,17 @@ class SUAPClient
         $rows = $grade_rows->count();
 
         for ($i = 0; $i < $rows; $i++) {
-          $course_data = [];
-          $grade_row = $grades->filter('tbody > tr')->eq($i);
+            $course_data = [];
+            $grade_row = $grades->filter('tbody > tr')->eq($i);
 
           // Explode course name and code from the same field.
-          $namecode = explode(" - ", $grade_row->filter('td')->eq(1)->text());
+          $namecode = explode(' - ', $grade_row->filter('td')->eq(1)->text());
           // Course code without name.
           $course_data['codigo'] = trim($namecode[0]);
           // Course name without course code.
           $course_data['disciplina'] = trim($namecode[1]);
 
-          array_push($data, $course_data);
+            array_push($data, $course_data);
         }
 
         return $data;
@@ -387,19 +407,22 @@ class SUAPClient
 
     /**
      * Gets the info for a specified course and period.
-     * @param  string $course_code Course code
-     * @param  string $ano_periodo Desired period
-     * @return array               Course list
+     *
+     * @param string $course_code Course code
+     * @param string $ano_periodo Desired period
+     *
+     * @return array Course list
      */
-    public function getCourseData($course_code = "", $ano_periodo = ''){
+    public function getCourseData($course_code = '', $ano_periodo = '')
+    {
         // Uses getGrades function as helper.
         $courses = $this->getGrades($ano_periodo);
         $data = [];
 
-        if ($course_code != ""){
+        if ($course_code != '') {
             // Loop through courses to find a specific one.
             foreach ($courses as $course) {
-                if ($course['codigo'] == $course_code){
+                if ($course['codigo'] == $course_code) {
                     $data = $course;
                 }
             }
@@ -412,10 +435,12 @@ class SUAPClient
     }
 
     /**
-     * Returns a list of courses filtered by name
-     * @param  string $ano_periodo  Desired period
-     * @param  string $course_names List of course names
-     * @return array                List of filtered courses
+     * Returns a list of courses filtered by name.
+     *
+     * @param string $ano_periodo  Desired period
+     * @param string $course_names List of course names
+     *
+     * @return array List of filtered courses
      */
     public function filterCoursesByName($course_names, $ano_periodo = '')
     {
@@ -426,22 +451,24 @@ class SUAPClient
         $data = [];
 
         foreach ($courses as $course) {
-            if ( preg_match($course_names, strtolower($course['disciplina'])) ){
+            if (preg_match($course_names, strtolower($course['disciplina']))) {
                 array_push($data, $course);
             }
         }
+
         return $data;
     }
 
     /**
-    *  Gets student data.
-    **/
-    public function getStudentData() {
-        if (! $this->matricula) {
+     *  Gets student data.
+     **/
+    public function getStudentData()
+    {
+        if (!$this->matricula) {
             $this->doLogin();
         }
 
-        $this->crawler = $this->client->request('GET', $this->aluno_endpoint . $this->matricula . '?tab=dados_pessoais');
+        $this->crawler = $this->client->request('GET', $this->aluno_endpoint.$this->matricula.'?tab=dados_pessoais');
 
         // student data
         $data = [];
