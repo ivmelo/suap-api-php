@@ -1,4 +1,4 @@
-<?php namespace Ivmelo\SUAPClient;
+<?php namespace ivmelo\SUAPClient;
 
 use Goutte\Client;
 use Symfony\Component\DomCrawler\Crawler;
@@ -469,6 +469,35 @@ class SUAPClient
         $data['email_pessoal'] = trim($contact_info->filter('td')->eq(7)->text());
         $data['telefone'] = trim($contact_info->filter('td')->eq(9)->text());
 
+        return $data;
+    }
+
+    public function getHorarios()
+    {
+        if (!$this->matricula)
+        {
+            $this->doLogin();
+        }
+
+        $this->crawler = $this->client->request('GET', $this->aluno_endpoint . $this->matricula . '?tab=locais_aula_aluno');
+        $tables = $this->crawler->filter('.box')->eq(2)->filter('table');
+
+        $hoje = date('w');
+        $hoje = 3;
+
+        if($hoje == 0)
+        {
+            $hoje = 7;
+        }
+
+        $data = [];
+        $tables->each(function(Crawler $table) use (&$data, $hoje){
+            $turno = trim($table->filter('thead')->filter('th')->eq(0)->text());
+            $table->filter('tbody')->filter('tr')->each(function(Crawler $tr) use (&$data, $turno, $hoje){
+                $data[strtolower($turno)][trim($tr->filter('td')->eq(0)->text())] = trim($tr->filter('td')->eq($hoje)->text()) ? trim($tr->filter('td')->eq($hoje)->text()) : null;
+            });
+
+        });
         return $data;
     }
 }
