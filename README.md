@@ -1,25 +1,24 @@
-# SUAPClient
+# SUAP API PHP
 
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/cca1ac97-8137-4887-86f1-78c927125cbd/mini.png)](https://insight.sensiolabs.com/projects/cca1ac97-8137-4887-86f1-78c927125cbd)
 [![StyleCI](https://styleci.io/repos/64276422/shield)](https://styleci.io/repos/64276422)
-[![Latest Stable Version](https://poser.pugx.org/ivmelo/suapclient/v/stable)](https://packagist.org/packages/ivmelo/suapclient)
-[![Total Downloads](https://poser.pugx.org/ivmelo/suapclient/downloads)](https://packagist.org/packages/ivmelo/suapclient)
-[![License](https://poser.pugx.org/ivmelo/suapclient/license)](https://packagist.org/packages/ivmelo/suapclient)
+[![Latest Stable Version](https://poser.pugx.org/ivmelo/suap-api-php/v/stable)](https://packagist.org/packages/ivmelo/suap-api-php)
+[![Total Downloads](https://poser.pugx.org/ivmelo/suap-api-php/downloads)](https://packagist.org/packages/ivmelo/suap-api-php)
+[![License](https://poser.pugx.org/ivmelo/suap-api-php/license)](https://packagist.org/packages/ivmelo/suap-api-php)
 [![Safadão](https://img.shields.io/badge/safadão-aprova-yellowgreen.svg)](https://img.shields.io/badge/safadão-aprova-yellowgreen.svg)
 
-Um cliente PHP para o SUAP (Sistema Unificado de Administração Publica).
+Um cliente PHP (não oficial) para o SUAP (Sistema Unificado de Administração Publica).
 
 For documentation in English [click here](https://github.com/ivmelo/suap-client/blob/master/README_EN.md). (No longer updated).
 
-Este pacote permite que você tenha acesso aos dados do SUAP na sua aplicação. (https://suap.ifrn.edu.br/)
+Este pacote permite que você tenha acesso aos dados do SUAP na sua aplicação PHP. (https://suap.ifrn.edu.br/)
 
 É o componente principal do [SUAP Bot](https://telegram.me/suapbot).
 
 Atualmente fornece informações de boletim (notas, frequência, cursos) e dados do aluno com alguns filtros e buscas simples. Funciona apenas no SUAP do IFRN, porém com um pouco de adaptação, pode funcionar no SUAP de outros IF's também.
 
-Ele faz [scraping](https://en.wikipedia.org/wiki/Web_scraping) nas páginas do SUAP em busca dos dados desejados. Porém no futuro pretende-se usar a API REST do SUAP que _segundo informações_, está em desenvolvimento.
+Ele faz [scraping](https://en.wikipedia.org/wiki/Web_scraping) nas páginas do SUAP em busca dos dados desejados. Porém no futuro pretende-se usar a API REST do SUAP que _segundo informações, está em desenvolvimento_.
 
-**Todos os _Pull Requests_ devem ser feitos para a branch ```dev```!**
 
 ### Instalação
 Este pacote está disponível através do composer.
@@ -28,13 +27,13 @@ Adicione a dependência abaixo no composer.json e execute ```composer update```.
 
 ```json
 "require": {
-    "ivmelo/suapclient": "^0.0.1"
+    "ivmelo/suap-api-php": "^0.0.3"
 }
 ```
 Alternativamente, você pode instalar direto pela linha de comando:
 
 ```bash
-$ composer require "ivmelo/suapclient": "^0.0.1"
+$ composer require "ivmelo/suap-api-php": "^0.0.3"
 ```
 
 ### Uso
@@ -160,9 +159,10 @@ A biblioteca utiliza um cliente HTTP para fazer os requests ao SUAP, e um DOM Pa
 
 ### Coisas a Fazer:
 1. Informações do Aluno; [DONE]
-1. Histórico do Aluno;
-1. Horário e Local de Aulas;
+1. Horário e Local de Aulas [DONE];
 1. Usar chave de acesso em vez de senha do aluno [DONE].
+1. Histórico do Aluno;
+1. Emitir documentos em PDF (declarações de matrícula, histórico, entre outros...).
 
 ### Licença
 The MIT License (MIT)
