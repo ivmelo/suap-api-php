@@ -2,7 +2,7 @@
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 
-use ivmelo\SUAPClient\SUAPClient;
+use Ivmelo\SUAPClient\SUAPClient;
 
 date_default_timezone_set('America/Fortaleza');
 
@@ -22,8 +22,8 @@ try {
     // print_r($client->getStudentData());
     // print_r($client->getCourses());
     // print_r($client->getCourseData('TEC.0077'));
-//    print_r($client->filterCoursesByName('de'));
-    print_r($client->getHorarios());
+    // print_r($client->filterCoursesByName('de'));
+    print_r($client->getSchedule());
     // print_r($client->getClasses());
 } catch (Exception $e) {
     // Print error.

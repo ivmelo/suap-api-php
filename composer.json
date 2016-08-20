@@ -14,7 +14,7 @@
     ],
     "autoload": {
         "psr-0": {
-            "ivmelo\\SUAPClient": "src/"
+            "Ivmelo\\SUAPClient": "src/"
         }
     },
     "minimum-stability": "dev"

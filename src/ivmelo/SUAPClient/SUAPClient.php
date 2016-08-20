@@ -1,4 +1,4 @@
-<?php namespace ivmelo\SUAPClient;
+<?php namespace Ivmelo\SUAPClient;
 
 use Goutte\Client;
 use Symfony\Component\DomCrawler\Crawler;
@@ -49,7 +49,10 @@ class SUAPClient
     }
 
     /**
-     * Does login for both cases (password or access key)
+     * Does login according to the type of user.
+     * @param  string $ano_periodo  Desired period
+     * @param  string $course_names List of course names
+     * @return array                List of filtered courses
      */
     public function doLogin() {
         if ($this->is_access_code)
@@ -59,7 +62,7 @@ class SUAPClient
     }
 
     /**
-    *  Does login with ID and password
+    *  Does login with ID and password.
     **/
     public function doAlunoLogin() {
         // get csrf token
@@ -82,7 +85,7 @@ class SUAPClient
     }
 
     /**
-    *  Does login with ID and access key
+    *  Does login with ID and access key.
     **/
     public function doResponsavelLogin() {
         // get csrf token
@@ -104,7 +107,7 @@ class SUAPClient
     }
 
     /**
-    *  Get this instance ID
+    *  Get this instance ID.
     **/
     public function getMatricula() {
         if (! $this->matricula) {
@@ -133,6 +136,11 @@ class SUAPClient
         return $courses_data;
     }
 
+    /**
+     * Get courses information.
+     * @param  Symfony\Component\DomCrawler\Crawler $crawler Crawler for the class schedule page.
+     * @return array  Course information.
+     */
     private function getCoursesData(Crawler $crawler) {
         $courses = $crawler->filter('table')->eq(1);
 
@@ -472,31 +480,50 @@ class SUAPClient
         return $data;
     }
 
-    public function getHorarios()
+    /**
+     * Returns class schedule for a given day of the week.
+     * @param int     $today  Day of the week (2 for monday, 3 for tuesday...)
+     * @return array  Class schedule for moning, afternoon and evening courses.
+     */
+    public function getSchedule($today = '4')
     {
         if (!$this->matricula)
         {
             $this->doLogin();
         }
 
+        // Get data from schedule page.
         $this->crawler = $this->client->request('GET', $this->aluno_endpoint . $this->matricula . '?tab=locais_aula_aluno');
         $tables = $this->crawler->filter('.box')->eq(2)->filter('table');
 
-        $hoje = date('w');
-
-        if($hoje == 0)
+        if($today == 0)
         {
-            $hoje = 7;
+            $today = 7;
         }
 
-        $data = [];
-        $tables->each(function(Crawler $table) use (&$data, $hoje){
-            $turno = trim($table->filter('thead')->filter('th')->eq(0)->text());
-            $table->filter('tbody')->filter('tr')->each(function(Crawler $tr) use (&$data, $turno, $hoje){
-                $data[strtolower($turno)][trim($tr->filter('td')->eq(0)->text())] = trim($tr->filter('td')->eq($hoje)->text()) ? trim($tr->filter('td')->eq($hoje)->text()) : null;
-            });
+        // Make day of the week start on sunday.
+        $today--;
 
+        // Scrap schedule data from tables.
+        $data = [];
+        $tables->each(function(Crawler $table) use (&$data, $today){
+            $turno = trim($table->filter('thead')->filter('th')->eq(0)->text());
+            $table->filter('tbody')->filter('tr')->each(function(Crawler $tr) use (&$data, $turno, $today){
+                $data[strtolower($turno)][trim($tr->filter('td')->eq(0)->text())] = trim($tr->filter('td')->eq($today)->text()) ? trim($tr->filter('td')->eq($today)->text()) : null;
+            });
         });
+
+        $courses_data = $this->getCoursesData($this->crawler);
+
+        // Replace course codes with class details.
+        foreach ($data as $shift => $hours) {
+            foreach ($data[$shift] as $time => $course) {
+                if($course) {
+                    $data[$shift][$time] = $courses_data[$course];
+                }
+            }
+        }
+
         return $data;
     }
 }
