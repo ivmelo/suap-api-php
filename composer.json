@@ -1,6 +1,6 @@
 {
-    "name": "ivmelo/suapclient",
-    "description": "A client to access data from SUAP.",
+    "name": "ivmelo/suap-api-php",
+    "description": "Uma API PHP para o SUAP.",
     "type": "library",
     "require": {
         "fabpot/goutte": "^3.1"
