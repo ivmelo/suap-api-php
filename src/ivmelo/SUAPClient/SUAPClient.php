@@ -483,7 +483,6 @@ class SUAPClient
         $tables = $this->crawler->filter('.box')->eq(2)->filter('table');
 
         $hoje = date('w');
-        $hoje = 3;
 
         if($hoje == 0)
         {
