@@ -118,7 +118,9 @@ class SUAPClient
     }
 
     /**
-     *  Get this instance ID.
+     * Get this instance ID.
+     *
+     * @return String Student ID.
      **/
     public function getMatricula()
     {
@@ -472,7 +474,9 @@ class SUAPClient
     }
 
     /**
-     *  Gets student data.
+     * Gets student data.
+     *
+     * @return array Student personal data.
      **/
     public function getStudentData()
     {
@@ -518,7 +522,7 @@ class SUAPClient
      *
      * @return array Class schedule for moning, afternoon and evening courses.
      */
-    public function getSchedule($today = '4')
+    public function getSchedule($today = '2')
     {
         if (!$this->matricula) {
             $this->doLogin();
