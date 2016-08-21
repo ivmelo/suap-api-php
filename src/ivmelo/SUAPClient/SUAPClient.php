@@ -120,7 +120,7 @@ class SUAPClient
     /**
      * Get this instance ID.
      *
-     * @return String Student ID.
+     * @return string Student ID.
      **/
     public function getMatricula()
     {
