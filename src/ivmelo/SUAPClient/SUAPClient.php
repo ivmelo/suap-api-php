@@ -533,7 +533,7 @@ class SUAPClient
         $tables = $this->crawler->filter('.box')->eq(2)->filter('table');
 
         // No day given. Use today.
-        if(! $today) {
+        if (!$today) {
             $today = date('w') + 1;
         }
 
