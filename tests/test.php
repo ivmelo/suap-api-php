@@ -23,7 +23,7 @@ try {
     print_r($client->getCourses());
     print_r($client->getCourseData('TEC.0077'));
     print_r($client->filterCoursesByName('de'));
-    print_r($client->getSchedule(4));
+    print_r($client->getSchedule(2));
     print_r($client->getClasses());
 } catch (Exception $e) {
     // Print error.

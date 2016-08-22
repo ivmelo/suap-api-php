@@ -146,7 +146,7 @@ class SUAPClient
         }
 
         // Go to the report card page.
-        $this->crawler = $this->client->request('GET', $this->aluno_endpoint.$this->matricula.'/?tab=locais_aula_aluno'.'&ano_periodo='.$ano_periodo);
+        $this->crawler = $this->client->request('GET', $this->aluno_endpoint.$this->matricula.'/?tab=locais_aula_aluno'.'&ano_periodo='.$ano_periodo, ['timeout' => '10']);
 
         $courses_data = $this->getCoursesData($this->crawler);
 
@@ -522,7 +522,7 @@ class SUAPClient
      *
      * @return array Class schedule for moning, afternoon and evening courses.
      */
-    public function getSchedule($today = '2')
+    public function getSchedule($today = null)
     {
         if (!$this->matricula) {
             $this->doLogin();
@@ -532,8 +532,14 @@ class SUAPClient
         $this->crawler = $this->client->request('GET', $this->aluno_endpoint.$this->matricula.'?tab=locais_aula_aluno');
         $tables = $this->crawler->filter('.box')->eq(2)->filter('table');
 
-        if ($today == 0) {
-            $today = 7;
+        // No day given. Use today.
+        if(! $today) {
+            $today = date('w') + 1;
+        }
+
+        // In the table, sunday is 8.
+        if ($today == 1) {
+            $today = 8;
         }
 
         // Make day of the week start on sunday.
