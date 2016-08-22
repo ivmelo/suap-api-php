@@ -537,12 +537,12 @@ class SUAPClient
             $today = date('w') + 1;
         }
 
-        // In the table, sunday is 8.
+        // Make day of the week start on sunday.
         if ($today == 1) {
             $today = 8;
         }
 
-        // Make day of the week start on sunday.
+        // The table has an offset for the times.
         $today--;
 
         // Scrap schedule data from tables.
