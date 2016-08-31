@@ -183,9 +183,7 @@ class SUAPClient
                 $class_data['codigo'] = $componente_data[0];
                 $class_data['disciplina'] = $componente_data[1];
                 $class_data['tipo'] = $componente_data[2];
-
             } catch (Exception $e) {
-
             }
 
             // Not every course has registered instructors. Some course are assigned instructors later.
@@ -538,7 +536,7 @@ class SUAPClient
         $tables = $this->crawler->filter('.box')->eq(2)->filter('table');
 
         // No day given. Use today.
-        if(! $today) {
+        if (!$today) {
             $today = date('w') + 1;
         }
 
