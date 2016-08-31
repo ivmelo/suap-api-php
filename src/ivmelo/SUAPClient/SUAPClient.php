@@ -176,12 +176,17 @@ class SUAPClient
             $class_data['diario'] = trim($class_row->filter('td')->eq(0)->text());
 
             // Component data.
-            $componente = trim($class_row->filter('td dd')->eq(0)->text());
-            $componente_data = explode(' - ', $componente);
+            try {
+                $componente = trim($class_row->filter('td dd')->eq(0)->text());
+                $componente_data = explode(' - ', $componente);
 
-            $class_data['codigo'] = $componente_data[0];
-            $class_data['disciplina'] = $componente_data[1];
-            $class_data['tipo'] = $componente_data[2];
+                $class_data['codigo'] = $componente_data[0];
+                $class_data['disciplina'] = $componente_data[1];
+                $class_data['tipo'] = $componente_data[2];
+
+            } catch (Exception $e) {
+
+            }
 
             // Not every course has registered instructors. Some course are assigned instructors later.
             try {
