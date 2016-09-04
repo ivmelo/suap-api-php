@@ -7,7 +7,7 @@
 [![License](https://poser.pugx.org/ivmelo/suap-api-php/license)](https://packagist.org/packages/ivmelo/suap-api-php)
 [![Safadão](https://img.shields.io/badge/safadão-aprova-yellowgreen.svg)](https://img.shields.io/badge/safadão-aprova-yellowgreen.svg)
 
-Um cliente PHP (não oficial) para o SUAP (Sistema Unificado de Administração Publica).
+Um cliente PHP (não oficial) para o SUAP (Sistema Unificado de Administração Publica) do IFRN.
 
 For documentation in English [click here](https://github.com/ivmelo/suap-client/blob/master/README_EN.md). (No longer updated).
 
@@ -15,7 +15,7 @@ Este pacote permite que você tenha acesso aos dados do SUAP na sua aplicação 
 
 É o componente principal do [SUAP Bot](https://telegram.me/suapbot).
 
-Atualmente fornece informações de boletim (notas, frequência, cursos) e dados do aluno com alguns filtros e buscas simples. Funciona apenas no SUAP do IFRN, porém com um pouco de adaptação, pode funcionar no SUAP de outros IF's também.
+Atualmente fornece informações de boletim (notas, frequência), cursos, horários e dados do aluno com alguns filtros e buscas simples.
 
 Ele faz [scraping](https://en.wikipedia.org/wiki/Web_scraping) nas páginas do SUAP em busca dos dados desejados. Porém no futuro pretende-se usar a API REST do SUAP que _segundo informações, está em desenvolvimento_.
 
@@ -33,7 +33,7 @@ Adicione a dependência abaixo no composer.json e execute ```composer update```.
 Alternativamente, você pode instalar direto pela linha de comando:
 
 ```bash
-$ composer require "ivmelo/suap-api-php": "^0.0.3"
+$ composer require "ivmelo/suap-api-php": "^0.1.0"
 ```
 
 ### Uso
