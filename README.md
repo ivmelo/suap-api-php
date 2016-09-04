@@ -495,7 +495,7 @@ A biblioteca utiliza um cliente HTTP para fazer os requests ao SUAP, e um DOM Pa
 ### Desenvolvimento (Como contribuir.)
 Para ajudar no Desenvolvimento, clone o repositório, instale as dependências e use o arquivo test.php que encontra-se na pasta tests.
 
-```php
+```bash
 $ git clone git@github.com:ivmelo/suap-api-php.git
 $ cd suap-api-php
 $ composer install
