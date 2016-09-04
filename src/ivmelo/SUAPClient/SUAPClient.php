@@ -198,11 +198,9 @@ class SUAPClient
             }
 
             // If set, use diario as array key.
-            if(isset($class_data['codigo']) && ! empty($class_data['codigo'])) {
+            if (isset($class_data['codigo']) && !empty($class_data['codigo'])) {
                 $data[$class_data['codigo']] = $class_data;
             }
-
-
         }
 
         // If the user is not registered in courses, will return an empty array.
