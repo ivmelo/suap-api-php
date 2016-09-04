@@ -184,7 +184,11 @@ class SUAPClient
                 $class_data['disciplina'] = $componente_data[1];
                 $class_data['tipo'] = $componente_data[2];
 
-            } catch (Exception $e) {
+                // Local, horário...
+                $class_data['local'] = trim($class_row->filter('td')->eq(2)->text());
+                $class_data['horario'] = trim($class_row->filter('td')->eq(3)->text());
+
+            } catch (\Exception $e) {
 
             }
 
@@ -195,15 +199,18 @@ class SUAPClient
                 $class_data['professores'] = [];
             }
 
-            // Local, diario...
-            $class_data['local'] = trim($class_row->filter('td')->eq(2)->text());
-            $class_data['horario'] = trim($class_row->filter('td')->eq(3)->text());
-
             // Use diario as array key.
             $data[$class_data['codigo']] = $class_data;
         }
 
-        return $data;
+        // Check if the student has courses.
+        if (empty($data[''])) {
+            return $data;
+        } else {
+            // No classes data. Probably the student is not yet registered in courses.
+            return [];
+        }
+
     }
 
     /**
@@ -523,7 +530,7 @@ class SUAPClient
     /**
      * Returns class schedule for a given day of the week.
      *
-     * @param int $today Day of the week (2 for monday, 3 for tuesday...)
+     * @param int $today Day of the week (1 for sunday, 2 for monday, 3 for tuesday...)
      *
      * @return array Class schedule for moning, afternoon and evening courses.
      */
