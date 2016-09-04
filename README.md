@@ -505,8 +505,6 @@ $ php test.php <matricula> <chave>
 
 O código em desenvolvimento mais recente está na branch ```dev```.
 
-*TODOS OS PULL REQUESTS DEVEM SER FEITOS PARA A BRANCH ```dev```.*
-
 ### Coisas a Fazer:
 1. Informações do Aluno; [DONE]
 1. Horário e Local de Aulas [DONE];
