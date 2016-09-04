@@ -9,8 +9,6 @@
 
 Um cliente PHP (não oficial) para o SUAP (Sistema Unificado de Administração Publica) do IFRN.
 
-For documentation in English [click here](https://github.com/ivmelo/suap-client/blob/master/README_EN.md). (No longer updated).
-
 Este pacote permite que você tenha acesso aos dados do SUAP na sua aplicação PHP. (https://suap.ifrn.edu.br/)
 
 É o componente principal do [SUAP Bot](https://telegram.me/suapbot).
@@ -27,13 +25,13 @@ Adicione a dependência abaixo no composer.json e execute ```composer update```.
 
 ```json
 "require": {
-    "ivmelo/suap-api-php": "^0.1.0"
+    "ivmelo/suap-api-php": "0.1.*"
 }
 ```
 Alternativamente, você pode instalar direto pela linha de comando:
 
 ```bash
-$ composer require "ivmelo/suap-api-php": "^0.1.0"
+$ composer require "ivmelo/suap-api-php": "0.1.*"
 ```
 
 ### Uso
