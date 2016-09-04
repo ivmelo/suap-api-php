@@ -187,9 +187,7 @@ class SUAPClient
                 // Local, horário...
                 $class_data['local'] = trim($class_row->filter('td')->eq(2)->text());
                 $class_data['horario'] = trim($class_row->filter('td')->eq(3)->text());
-
             } catch (\Exception $e) {
-
             }
 
             // Not every course has registered instructors. Some course are assigned instructors later.
@@ -210,7 +208,6 @@ class SUAPClient
             // No classes data. Probably the student is not yet registered in courses.
             return [];
         }
-
     }
 
     /**
@@ -545,7 +542,7 @@ class SUAPClient
         $tables = $this->crawler->filter('.box')->eq(2)->filter('table');
 
         // No day given. Use today.
-        if(! $today) {
+        if (!$today) {
             $today = date('w') + 1;
         }
 
