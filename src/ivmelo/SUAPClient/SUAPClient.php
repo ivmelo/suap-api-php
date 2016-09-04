@@ -146,7 +146,7 @@ class SUAPClient
         }
 
         // Go to the report card page.
-        $this->crawler = $this->client->request('GET', $this->aluno_endpoint.$this->matricula.'/?tab=locais_aula_aluno'.'&ano_periodo='.$ano_periodo, ['timeout' => '10']);
+        $this->crawler = $this->client->request('GET', $this->aluno_endpoint.$this->matricula.'/?tab=locais_aula_aluno', ['timeout' => '10']);
 
         $courses_data = $this->getCoursesData($this->crawler);
 
@@ -197,17 +197,14 @@ class SUAPClient
                 $class_data['professores'] = [];
             }
 
-            // Use diario as array key.
-            $data[$class_data['codigo']] = $class_data;
+            // If set, use diario as array key.
+            if (isset($class_data['codigo']) && !empty($class_data['codigo'])) {
+                $data[$class_data['codigo']] = $class_data;
+            }
         }
 
-        // Check if the student has courses.
-        if (empty($data[''])) {
-            return $data;
-        } else {
-            // No classes data. Probably the student is not yet registered in courses.
-            return [];
-        }
+        // If the user is not registered in courses, will return an empty array.
+        return $data;
     }
 
     /**
