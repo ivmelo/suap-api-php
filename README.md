@@ -481,6 +481,160 @@ Array
 )
 ```
 
+### Horários de Aula semanal
+Para recuperar horários de aula, use o método ```getWeekSchedule()```.
+
+No retorno 1 representa o domingo, 2 a segunda, 3 a terça...
+
+Ex: para recuperar os horários da segunda feira:
+
+```php
+$client->getWeekSchedule()
+```
+
+Isso retornará um array associativo usando os dias da semana, seguido pelo turno e horários como chave, e as informações do curso como valores.
+
+```php
+Array
+(
+    [2] =>
+        Array
+        (
+            [matutino] => Array
+                (
+                    [07:00 - 07:45] =>
+                    [07:45 - 08:30] =>
+                    [08:50 - 09:35] =>
+                    [09:35 - 10:20] =>
+                    [10:30 - 11:15] =>
+                    [11:15 - 12:00] =>
+                )
+        
+            [vespertino] => Array
+                (
+                    [13:00 - 13:45] => Array
+                        (
+                            [diario] => 7353
+                            [codigo] => TIN.0244
+                            [disciplina] => Gestão Organizacional(30H)
+                            [tipo] => Médio [30 h/40 Aulas]
+                            [local] => C-21 - Bloco C (CNAT)
+                            [horario] => 2V12
+                            [professores] => Array
+                                (
+                                    [0] => Nome do Professor
+                                )
+        
+                        )
+        
+                    [13:45 - 14:30] => Array
+                        (
+                            [diario] => 7353
+                            [codigo] => TIN.0244
+                            [disciplina] => Gestão Organizacional(30H)
+                            [tipo] => Médio [30 h/40 Aulas]
+                            [local] => C-21 - Bloco C (CNAT)
+                            [horario] => 2V12
+                            [professores] => Array
+                                (
+                                    [0] => Nome do Professor
+                                )
+        
+                        )
+        
+                    [14:40 - 15:25] => Array
+                        (
+                            [diario] => 7351
+                            [codigo] => TIN.0599
+                            [disciplina] => Programação Orientada a Serviços(120H)
+                            [tipo] => Médio [120 h/160 Aulas]
+                            [local] => Laboratório de informática 04 - DIATINF - Informática (CNAT)
+                            [horario] => 2V34 / 5V56
+                            [professores] => Array
+                                (
+                                    [0] => Nome do Professor
+                                )
+        
+                        )
+        
+                    [15:25 - 16:10] => Array
+                        (
+                            [diario] => 7351
+                            [codigo] => TIN.0599
+                            [disciplina] => Programação Orientada a Serviços(120H)
+                            [tipo] => Médio [120 h/160 Aulas]
+                            [local] => Laboratório de informática 04 - DIATINF - Informática (CNAT)
+                            [horario] => 2V34 / 5V56
+                            [professores] => Array
+                                (
+                                    [0] => Nome do Professor
+                                )
+        
+                        )
+        
+                    [16:30 - 17:15] => Array
+                        (
+                            [diario] => 7352
+                            [codigo] => TIN.0598
+                            [disciplina] => Projeto de Interface do Usuário(120H)
+                            [tipo] => Médio [120 h/160 Aulas]
+                            [local] => Laboratório de informática 07 - DIATINF - Informática (CNAT)
+                            [horario] => 2V56 / 5V34
+                            [professores] => Array
+                                (
+                                    [0] => Nome do Professor
+                                )
+        
+                        )
+        
+                    [17:15 - 18:00] => Array
+                        (
+                            [diario] => 7352
+                            [codigo] => TIN.0598
+                            [disciplina] => Projeto de Interface do Usuário(120H)
+                            [tipo] => Médio [120 h/160 Aulas]
+                            [local] => Laboratório de informática 07 - DIATINF - Informática (CNAT)
+                            [horario] => 2V56 / 5V34
+                            [professores] => Array
+                                (
+                                    [0] => Nome do Professor
+                                )
+        
+                        )
+        
+                )
+        
+            [noturno] => Array
+                (
+                    [19:00 - 19:45] =>
+                    [19:45 - 20:30] =>
+                    [20:40 - 21:25] =>
+                    [21:25 - 22:10] =>
+                )
+        
+        )
+    [3] =>
+        Array
+        (
+            ...
+        )
+    [4] =>
+        Array
+        (
+            ...
+        )
+    [5] =>
+        Array
+        (
+            ...
+        )
+    [6] =>
+        Array
+        (
+            ...
+        )
+```
+
 ### E se não houver informações no SUAP?
 Caso alguma informação não seja encontrada no SUAP, os métodos retornarão arrays vazios.
 
