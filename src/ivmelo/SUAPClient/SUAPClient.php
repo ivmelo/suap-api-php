@@ -586,8 +586,6 @@ class SUAPClient
             return [];
         }
 
-
-
         return $data;
     }
 }
