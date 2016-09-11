@@ -55,7 +55,6 @@ class SUAPClient
 
     /**
      * Does login according to the type of user.
-     *
      */
     public function doLogin()
     {
@@ -145,7 +144,7 @@ class SUAPClient
 
         // If year/term is passed.
         if ($ano_periodo) {
-            $url .= '&ano-periodo=' . $ano_periodo;
+            $url .= '&ano-periodo='.$ano_periodo;
         }
 
         // Go to the report card page.
@@ -527,8 +526,8 @@ class SUAPClient
     /**
      * Returns class schedule for a given day of the week.
      *
-     * @param int       $today Day of the week (1 for sunday, 2 for monday, 3 for tuesday...)
-     * @param string    $ano_periodo   year/term in yyyy.t format. Ex. '2016.1'.
+     * @param int    $today       Day of the week (1 for sunday, 2 for monday, 3 for tuesday...)
+     * @param string $ano_periodo year/term in yyyy.t format. Ex. '2016.1'.
      *
      * @return array Class schedule for moning, afternoon and evening courses.
      */
@@ -543,7 +542,7 @@ class SUAPClient
 
         // If year/term is passed.
         if ($ano_periodo) {
-            $url .= '&ano-periodo=' . $ano_periodo;
+            $url .= '&ano-periodo='.$ano_periodo;
         }
 
         // Get data from schedule page.
