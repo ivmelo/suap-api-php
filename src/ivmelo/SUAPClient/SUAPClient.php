@@ -56,10 +56,6 @@ class SUAPClient
     /**
      * Does login according to the type of user.
      *
-     * @param string $ano_periodo  Desired period
-     * @param string $course_names List of course names
-     *
-     * @return array List of filtered courses
      */
     public function doLogin()
     {
@@ -134,19 +130,26 @@ class SUAPClient
     /**
      * Return class information, schedule and location.
      *
-     * @param  string   day     Day of the week (mon\tue\wed\thu|fri|sat|sun)
+     * @param  ano_periodo   year/term in yyyy.t format. Ex. '2016.1'.
      *
-     * @return array Class info
+     * @return array Class info.
      */
-    public function getClasses()
+    public function getClasses($ano_periodo = null)
     {
-        // $ano_periodo no formato yyyy_p (ex.: 2015_1)
         if (!$this->matricula) {
             $this->doLogin();
         }
 
+        // Endpoint.
+        $url = $this->aluno_endpoint.$this->matricula.'/?tab=locais_aula_aluno';
+
+        // If year/term is passed.
+        if ($ano_periodo) {
+            $url .= '&ano-periodo=' . $ano_periodo;
+        }
+
         // Go to the report card page.
-        $this->crawler = $this->client->request('GET', $this->aluno_endpoint.$this->matricula.'/?tab=locais_aula_aluno', ['timeout' => '10']);
+        $this->crawler = $this->client->request('GET', $url, ['timeout' => '10']);
 
         $courses_data = $this->getCoursesData($this->crawler);
 
@@ -524,18 +527,27 @@ class SUAPClient
     /**
      * Returns class schedule for a given day of the week.
      *
-     * @param int $today Day of the week (1 for sunday, 2 for monday, 3 for tuesday...)
+     * @param int       $today Day of the week (1 for sunday, 2 for monday, 3 for tuesday...)
+     * @param string    $ano_periodo   year/term in yyyy.t format. Ex. '2016.1'.
      *
      * @return array Class schedule for moning, afternoon and evening courses.
      */
-    public function getSchedule($today = null)
+    public function getSchedule($today = null, $ano_periodo = null)
     {
         if (!$this->matricula) {
             $this->doLogin();
         }
 
+        // Endpoint.
+        $url = $this->aluno_endpoint.$this->matricula.'/?tab=locais_aula_aluno';
+
+        // If year/term is passed.
+        if ($ano_periodo) {
+            $url .= '&ano-periodo=' . $ano_periodo;
+        }
+
         // Get data from schedule page.
-        $this->crawler = $this->client->request('GET', $this->aluno_endpoint.$this->matricula.'?tab=locais_aula_aluno');
+        $this->crawler = $this->client->request('GET', $url);
         $tables = $this->crawler->filter('.box')->eq(2)->filter('table');
 
         // No day given. Use today.
