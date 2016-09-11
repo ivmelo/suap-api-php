@@ -573,14 +573,20 @@ class SUAPClient
 
         $courses_data = $this->getCoursesData($this->crawler);
 
-        // Replace course codes with class details.
-        foreach ($data as $shift => $hours) {
-            foreach ($data[$shift] as $time => $course) {
-                if ($course) {
-                    $data[$shift][$time] = $courses_data[$course];
+        if(! empty($courses_data)) {
+            // Replace course codes with class details.
+            foreach ($data as $shift => $hours) {
+                foreach ($data[$shift] as $time => $course) {
+                    if ($course) {
+                        $data[$shift][$time] = $courses_data[$course];
+                    }
                 }
             }
+        } else {
+            return [];
         }
+
+
 
         return $data;
     }

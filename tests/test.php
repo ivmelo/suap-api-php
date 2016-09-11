@@ -24,6 +24,10 @@ try {
     print_r($client->filterCoursesByName('teste paradigma'));
     print_r($client->getClasses()); //$client->getClasses('2016.1')
     print_r($client->getSchedule(2)); //$client->getSchedule(2, '2016.2')
+
+    // print_r($client->getSchedule(2, '2016.1'));
+    // print_r($client->getSchedule(2, '2016.2'));
+    // print_r($client->getSchedule(2));
 } catch (Exception $e) {
     // Print error.
     echo $e;
