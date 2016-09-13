@@ -602,9 +602,9 @@ class SUAPClient
                     if ($index > 1)
                     {
                         if (isset($courses_data[trim($td->text())]))
-                            $data[$index][$turno][$horario] = $courses_data[trim($td->text())];
+                            $data[$index % 8][$turno][$horario] = $courses_data[trim($td->text())];
                         else
-                            $data[$index][$turno][$horario] = trim($td->text());
+                            $data[$index % 8][$turno][$horario] = trim($td->text());
                     }
                     $index ++;
                 });
