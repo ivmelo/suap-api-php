@@ -17,7 +17,6 @@ try {
     // You can use either one of these.
     // $client = new SUAPClient('student_id', 'suap_password');
     // $client = new SUAPClient('student_id', 'suap_access_key', true);
-
     $client = new SUAPClient($student_id, $suap_key, true);
 
     print_r($client->getGrades());
@@ -25,7 +24,12 @@ try {
     print_r($client->getCourses());
     print_r($client->getCourseData('TEC.0080'));
     print_r($client->filterCoursesByName('teste paradigma'));
-    print_r($client->getClasses());
+    print_r($client->getClasses()); //$client->getClasses('2016.1')
+    print_r($client->getSchedule(2)); //$client->getSchedule(2, '2016.2')
+
+    // print_r($client->getSchedule(2, '2016.1'));
+    // print_r($client->getSchedule(2, '2016.2'));
+    // print_r($client->getSchedule(2));
     print_r($client->getWeekSchedule());
 } catch (Exception $e) {
     // Print error.
