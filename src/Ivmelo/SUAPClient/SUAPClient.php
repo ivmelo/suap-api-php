@@ -614,14 +614,14 @@ class SUAPClient
                 $horario = trim($tr->filter('td')->eq(0)->text());
                 $index = 0;
                 $tr->filter('td')->each(function (Crawler $td) use (&$data, &$index, $turno, $horario, $courses_data) {
-                    if ($index > 0)
-                    {
-                        if (isset($courses_data[trim($td->text())]))
+                    if ($index > 0) {
+                        if (isset($courses_data[trim($td->text())])) {
                             $data[($index % 7) + 1][$turno][$horario] = $courses_data[trim($td->text())];
-                        else
+                        } else {
                             $data[($index % 7) + 1][$turno][$horario] = trim($td->text());
+                        }
                     }
-                    $index ++;
+                    $index++;
                 });
             });
         });
