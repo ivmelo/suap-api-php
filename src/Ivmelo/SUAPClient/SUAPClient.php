@@ -588,4 +588,44 @@ class SUAPClient
 
         return $data;
     }
+
+    /**
+     * Returns class schedule for a week.
+     *
+     * @return array Class schedule for moning, afternoon and evening courses for each day.
+     */
+    public function getWeekSchedule()
+    {
+        if (!$this->matricula) {
+            $this->doLogin();
+        }
+
+        // Get data from schedule page.
+        $this->crawler = $this->client->request('GET', $this->aluno_endpoint.$this->matricula.'?tab=locais_aula_aluno');
+
+        $tables = $this->crawler->filter('.box')->eq(2)->filter('table');
+        $courses_data = $this->getCoursesData($this->crawler);
+
+        // Scrap schedule data from tables.
+        $data = [];
+        $tables->each(function (Crawler $table) use (&$data, $courses_data) {
+            $turno = strtolower(trim($table->filter('thead')->filter('th')->eq(0)->text()));
+            $table->filter('tbody')->filter('tr')->each(function (Crawler $tr) use (&$data, $turno, &$index, $courses_data) {
+                $horario = trim($tr->filter('td')->eq(0)->text());
+                $index = 0;
+                $tr->filter('td')->each(function (Crawler $td) use (&$data, &$index, $turno, $horario, $courses_data) {
+                    if ($index > 0)
+                    {
+                        if (isset($courses_data[trim($td->text())]))
+                            $data[($index % 7) + 1][$turno][$horario] = $courses_data[trim($td->text())];
+                        else
+                            $data[($index % 7) + 1][$turno][$horario] = trim($td->text());
+                    }
+                    $index ++;
+                });
+            });
+        });
+
+        return $data;
+    }
 }

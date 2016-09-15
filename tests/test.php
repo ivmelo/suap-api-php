@@ -2,6 +2,8 @@
 
 require dirname(__DIR__).'/vendor/autoload.php';
 
+error_reporting(E_ALL ^ E_NOTICE ^ E_WARNING);
+
 use Ivmelo\SUAPClient\SUAPClient;
 
 date_default_timezone_set('America/Fortaleza');
@@ -28,6 +30,7 @@ try {
     // print_r($client->getSchedule(2, '2016.1'));
     // print_r($client->getSchedule(2, '2016.2'));
     // print_r($client->getSchedule(2));
+    print_r($client->getWeekSchedule());
 } catch (Exception $e) {
     // Print error.
     echo $e;
