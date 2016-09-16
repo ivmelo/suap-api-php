@@ -35,7 +35,7 @@ class SUAPClient
             $this->is_access_code = $is_access_code;
         }
 
-        // Guzzle client
+        // Goutte client
         $this->client = new Client();
 
         // Create and use a guzzle client instance that will time out after 10 seconds
