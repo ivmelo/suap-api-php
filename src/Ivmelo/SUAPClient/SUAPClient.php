@@ -19,7 +19,6 @@ class SUAPClient
     private $aluno_endpoint = 'https://suap.ifrn.edu.br/edu/aluno/';
     private $responsavel_endpoint = 'https://suap.ifrn.edu.br/edu/acesso_responsavel/';
     private $is_access_code = false;
-    private $timeout = 10; // Timeout in seconds...
 
     /**
      * Construct function.
@@ -38,6 +37,14 @@ class SUAPClient
 
         // Guzzle client
         $this->client = new Client();
+
+        // Create and use a guzzle client instance that will time out after 10 seconds
+        $guzzle_client = new \GuzzleHttp\Client([
+            'timeout' => 10,
+            'connect_timeout' => 10
+        ]);
+
+        $this->client->setClient($guzzle_client);
     }
 
     /**
@@ -72,7 +79,7 @@ class SUAPClient
     public function doAlunoLogin()
     {
         // get csrf token
-        $this->crawler = $this->client->request('GET', $this->endpoint, ['timeout' => $this->timeout]);
+        $this->crawler = $this->client->request('GET', $this->endpoint);
         $token = $this->crawler->filter('input[name="csrfmiddlewaretoken"]');
         $token = $token->attr('value');
 
@@ -96,9 +103,11 @@ class SUAPClient
     public function doResponsavelLogin()
     {
         // get csrf token
-        $this->crawler = $this->client->request('GET', $this->responsavel_endpoint, ['timeout' => $this->timeout]);
+        $this->crawler = $this->client->request('GET', $this->responsavel_endpoint);
         $token = $this->crawler->filter('input[name="csrfmiddlewaretoken"]');
         $token = $token->attr('value');
+        print_r($this->timeout);
+
 
         // get form and submit
         $form = $this->crawler->selectButton('Acessar')->form();
@@ -149,7 +158,7 @@ class SUAPClient
         }
 
         // Go to the report card page.
-        $this->crawler = $this->client->request('GET', $url, ['timeout' => $this->timeout]);
+        $this->crawler = $this->client->request('GET', $url);
 
         $courses_data = $this->getCoursesData($this->crawler);
 
@@ -226,7 +235,7 @@ class SUAPClient
         }
 
         // Go to the report card page.
-        $this->crawler = $this->client->request('GET', $this->aluno_endpoint.$this->matricula.'/?tab=boletim'.'&ano_periodo='.$ano_periodo, ['timeout' => $this->timeout]);
+        $this->crawler = $this->client->request('GET', $this->aluno_endpoint.$this->matricula.'/?tab=boletim'.'&ano_periodo='.$ano_periodo);
 
         // Find grades table.
         $grades = $this->crawler->filter('table[class="borda"]');
@@ -401,7 +410,7 @@ class SUAPClient
             $this->doLogin();
         }
         // Go to grades page.
-        $this->crawler = $this->client->request('GET', $this->aluno_endpoint.$this->matricula.'/?tab=boletim'.'&ano_periodo='.$ano_periodo, ['timeout' => $this->timeout]);
+        $this->crawler = $this->client->request('GET', $this->aluno_endpoint.$this->matricula.'/?tab=boletim'.'&ano_periodo='.$ano_periodo);
         // Get a crawler for the grades table.
         $grades = $this->crawler->filter('table[class="borda"]');
         $grade_rows = $grades->filter('tbody > tr');
@@ -493,7 +502,7 @@ class SUAPClient
             $this->doLogin();
         }
 
-        $this->crawler = $this->client->request('GET', $this->aluno_endpoint.$this->matricula.'?tab=dados_pessoais', ['timeout' => $this->timeout]);
+        $this->crawler = $this->client->request('GET', $this->aluno_endpoint.$this->matricula.'?tab=dados_pessoais');
 
         // student data
         $data = [];
@@ -547,7 +556,7 @@ class SUAPClient
         }
 
         // Get data from schedule page.
-        $this->crawler = $this->client->request('GET', $url, ['timeout' => $this->timeout]);
+        $this->crawler = $this->client->request('GET', $url);
         $tables = $this->crawler->filter('.box')->eq(2)->filter('table');
 
         // No day given. Use today.
@@ -602,7 +611,7 @@ class SUAPClient
         }
 
         // Get data from schedule page.
-        $this->crawler = $this->client->request('GET', $this->aluno_endpoint.$this->matricula.'?tab=locais_aula_aluno', ['timeout' => $this->timeout]);
+        $this->crawler = $this->client->request('GET', $this->aluno_endpoint.$this->matricula.'?tab=locais_aula_aluno');
 
         $tables = $this->crawler->filter('.box')->eq(2)->filter('table');
         $courses_data = $this->getCoursesData($this->crawler);

@@ -33,5 +33,5 @@ try {
     print_r($client->getWeekSchedule());
 } catch (Exception $e) {
     // Print error.
-    echo $e;
+    echo $e->getMessage();
 }
