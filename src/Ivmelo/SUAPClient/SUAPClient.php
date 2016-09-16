@@ -35,8 +35,16 @@ class SUAPClient
             $this->is_access_code = $is_access_code;
         }
 
-        // Guzzle client
+        // Goutte client
         $this->client = new Client();
+
+        // Create and use a guzzle client instance that will time out after 10 seconds
+        $guzzle_client = new \GuzzleHttp\Client([
+            'timeout'         => 10,
+            'connect_timeout' => 10,
+        ]);
+
+        $this->client->setClient($guzzle_client);
     }
 
     /**
@@ -148,7 +156,7 @@ class SUAPClient
         }
 
         // Go to the report card page.
-        $this->crawler = $this->client->request('GET', $url, ['timeout' => '10']);
+        $this->crawler = $this->client->request('GET', $url);
 
         $courses_data = $this->getCoursesData($this->crawler);
 
