@@ -106,8 +106,6 @@ class SUAPClient
         $this->crawler = $this->client->request('GET', $this->responsavel_endpoint);
         $token = $this->crawler->filter('input[name="csrfmiddlewaretoken"]');
         $token = $token->attr('value');
-        print_r($this->timeout);
-
 
         // get form and submit
         $form = $this->crawler->selectButton('Acessar')->form();
