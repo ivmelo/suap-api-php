@@ -40,8 +40,8 @@ class SUAPClient
 
         // Create and use a guzzle client instance that will time out after 10 seconds
         $guzzle_client = new \GuzzleHttp\Client([
-            'timeout' => 10,
-            'connect_timeout' => 10
+            'timeout'         => 10,
+            'connect_timeout' => 10,
         ]);
 
         $this->client->setClient($guzzle_client);
