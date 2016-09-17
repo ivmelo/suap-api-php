@@ -219,7 +219,7 @@ class SUAPClient
 
     /**
      * Return the information for all courses for the specified
-     * period/year (default = last period).
+     * The default year/period is "chosen" by suap. Usually last period.
      *
      * @param string $ano_periodo Desired period
      *
@@ -227,10 +227,13 @@ class SUAPClient
      */
     public function getGrades($ano_periodo = '')
     {
-        // $ano_periodo no formato yyyy_p (ex.: 2015_1)
         if (!$this->matricula) {
             $this->doLogin();
         }
+
+        // Replaces . for _ to make it compatible with the get schedule method.
+        // Besides, it's way more common to write 2015.2 than 2015_2.
+        $ano_periodo = str_replace('.', '_', $ano_periodo);
 
         // Go to the report card page.
         $this->crawler = $this->client->request('GET', $this->aluno_endpoint.$this->matricula.'/?tab=boletim'.'&ano_periodo='.$ano_periodo);
@@ -270,16 +273,16 @@ class SUAPClient
             $course_data['disciplina'] = trim($namecode[1]);
 
             // Get total class-hours for the course.
-            $course_data['carga_horaria'] = $this->getFieldValue($grade_row->filter('td')->eq(2)->text());// (int) $grade_row->filter('td')->eq(2)->text() ? (int) $grade_row->filter('td')->eq(2)->text() : null;
+            $course_data['carga_horaria'] = $this->getFieldValue($grade_row->filter('td')->eq(2)->text());
 
             // Number or classes given.
-            $course_data['aulas'] = $this->getFieldValue($grade_row->filter('td')->eq(3)->text()); //(int) $grade_row->filter('td')->eq(3)->text() ? (int) $grade_row->filter('td')->eq(3)->text() : null;
+            $course_data['aulas'] = $this->getFieldValue($grade_row->filter('td')->eq(3)->text());
 
             // Absences.
-            $course_data['faltas'] = $this->getFieldValue($grade_row->filter('td')->eq(4)->text()); // $grade_row->filter('td')->eq(4)->text() ? $grade_row->filter('td')->eq(4)->text() : null;
+            $course_data['faltas'] = $this->getFieldValue($grade_row->filter('td')->eq(4)->text());
 
             // Attendance.
-            $course_data['frequencia'] = $this->getFieldValue($grade_row->filter('td')->eq(5)->text()); //(int) $grade_row->filter('td')->eq(5)->text() ? (int) $grade_row->filter('td')->eq(5)->text() : null;
+            $course_data['frequencia'] = $this->getFieldValue($grade_row->filter('td')->eq(5)->text());
 
             // Situation.
             $course_data['situacao'] = strtolower($grade_row->filter('td')->eq(6)->text()) ? strtolower($grade_row->filter('td')->eq(6)->text()) : null;
@@ -303,38 +306,41 @@ class SUAPClient
             // Number of bimesters and wether they skip the 1st 2nd or 3rd 4th bimesters.
             $node_number = 7;
 
-            echo $course_data['disciplina'] . ": HS: $is_high_school | SK12: $skips_12bm | SK34: $skips_34bm \n";
-
             // Some high school courses, skips the 1st and 2nd bimesters.
             // If this course doesn't skip the 1st and 2nd bms...
             if(! $skips_12bm) {
 
                 // First bimester, grade.
                 try {
-                    $course_data['bm1_nota'] = $this->getFieldValue($grade_row->filter('td')->eq($node_number++)->text()); // (int) $grade_row->filter('td')->eq(7)->text() ? (int) $grade_row->filter('td')->eq(7)->text() : null;
+                    $course_data['bm1_nota'] = $this->getFieldValue($grade_row->filter('td')->eq($node_number++)->text());
                 } catch (\Exception $e) {
                     $course_data['bm1_nota'] = null;
                 }
 
                 // First bimester, absences.
                 try {
-                    $course_data['bm1_faltas'] = $this->getFieldValue($grade_row->filter('td')->eq($node_number++)->text()); // (int) $grade_row->filter('td')->eq(8)->text() ? (int) $grade_row->filter('td')->eq(8)->text() : null;
+                    $course_data['bm1_faltas'] = $this->getFieldValue($grade_row->filter('td')->eq($node_number++)->text());
                 } catch (\Exception $e) {
                     $course_data['bm1_faltas'] = null;
                 }
 
                 // Second bimester, grade.
                 try {
-                    $course_data['bm2_nota'] = $this->getFieldValue($grade_row->filter('td')->eq($node_number++)->text()); // (int) $grade_row->filter('td')->eq(9)->text() ? (int) $grade_row->filter('td')->eq(9)->text() : null;
+                    $course_data['bm2_nota'] = $this->getFieldValue($grade_row->filter('td')->eq($node_number++)->text());
                 } catch (\Exception $e) {
                     $course_data['bm2_nota'] = null;
                 }
 
                 // Second bimester, absences.
                 try {
-                    $course_data['bm2_faltas'] = $this->getFieldValue($grade_row->filter('td')->eq($node_number++)->text()); // (int) $grade_row->filter('td')->eq(10)->text() ? (int) $grade_row->filter('td')->eq(10)->text() : null;
+                    $course_data['bm2_faltas'] = $this->getFieldValue($grade_row->filter('td')->eq($node_number++)->text());
                 } catch (\Exception $e) {
                     $course_data['bm2_faltas'] = null;
+                }
+
+                // Skips 3rd and 4th bimesters. Goes straight to "média".
+                if ($skips_34bm) {
+                    $node_number = 12;
                 }
 
             }
@@ -346,151 +352,58 @@ class SUAPClient
                 }
 
                 // Third bimester, grade.
-                // $node_number = 11 + $offset;
                 try {
-                    $course_data['bm3_nota'] = $this->getFieldValue($grade_row->filter('td')->eq($node_number++)->text()); // (int) $grade_row->filter('td')->eq(11)->text() ? (int) $grade_row->filter('td')->eq(7)->text() : null;
+                    $course_data['bm3_nota'] = $this->getFieldValue($grade_row->filter('td')->eq($node_number++)->text());
                 } catch (\Exception $e) {
                     $course_data['bm3_nota'] = null;
                 }
 
                 // Third bimester, absences.
-                // $node_number = 12 + $offset;
                 try {
-                    $course_data['bm3_faltas'] = $this->getFieldValue($grade_row->filter('td')->eq($node_number++)->text()); // (int) $grade_row->filter('td')->eq(12)->text() ? (int) $grade_row->filter('td')->eq(8)->text() : null;
+                    $course_data['bm3_faltas'] = $this->getFieldValue($grade_row->filter('td')->eq($node_number++)->text());
                 } catch (\Exception $e) {
                     $course_data['bm3_faltas'] = null;
                 }
 
                 // Fourth bimester, grade.
-                // $node_number = 13 + $offset;
                 try {
-                    $course_data['bm4_nota'] = $this->getFieldValue($grade_row->filter('td')->eq($node_number++)->text()); // (int) $grade_row->filter('td')->eq(13)->text() ? (int) $grade_row->filter('td')->eq(9)->text() : null;
+                    $course_data['bm4_nota'] = $this->getFieldValue($grade_row->filter('td')->eq($node_number++)->text());
                 } catch (\Exception $e) {
                     $course_data['bm4_nota'] = null;
                 }
 
                 // Fourth bimester, absences.
-                // $node_number = 14 + $offset;
                 try {
-                    $course_data['bm4_faltas'] = $this->getFieldValue($grade_row->filter('td')->eq($node_number++)->text()); // (int) $grade_row->filter('td')->eq(14)->text() ? (int) $grade_row->filter('td')->eq(10)->text() : null;
+                    $course_data['bm4_faltas'] = $this->getFieldValue($grade_row->filter('td')->eq($node_number++)->text());
                 } catch (\Exception $e) {
                     $course_data['bm4_faltas'] = null;
                 }
             }
 
-            // if ($columns == 20 || $skips_12bm) {
-            //     # code...
-            //     if ($skips_12bm) {
-            //         // When they have a course that stats in the 3th bimester,
-            //         // Their report card will have an empty column
-            //         $offset = -3;
-            //     } else {
-            //         // When they have a 4 bimester course, their report card will have 20 columns.
-            //         // Well grab the bm3 and bm4 data here, and add an offset to get the rest of the info.
-            //         $offset = 0;
-            //     }
-            //
-            //     var_dump($offset);
-
-                // // Third bimester, grade.
-                // // $node_number = 11 + $offset;
-                // try {
-                //     $course_data['bm3_nota'] = $this->getFieldValue($grade_row->filter('td')->eq($node_number++)->text()); // (int) $grade_row->filter('td')->eq(11)->text() ? (int) $grade_row->filter('td')->eq(7)->text() : null;
-                // } catch (\Exception $e) {
-                //     $course_data['bm3_nota'] = null;
-                // }
-                //
-                // // Third bimester, absences.
-                // // $node_number = 12 + $offset;
-                // try {
-                //     $course_data['bm3_faltas'] = $this->getFieldValue($grade_row->filter('td')->eq($node_number++)->text()); // (int) $grade_row->filter('td')->eq(12)->text() ? (int) $grade_row->filter('td')->eq(8)->text() : null;
-                // } catch (\Exception $e) {
-                //     $course_data['bm3_faltas'] = null;
-                // }
-                //
-                // // Fourth bimester, grade.
-                // // $node_number = 13 + $offset;
-                // try {
-                //     $course_data['bm4_nota'] = $this->getFieldValue($grade_row->filter('td')->eq($node_number++)->text()); // (int) $grade_row->filter('td')->eq(13)->text() ? (int) $grade_row->filter('td')->eq(9)->text() : null;
-                // } catch (\Exception $e) {
-                //     $course_data['bm4_nota'] = null;
-                // }
-                //
-                // // Fourth bimester, absences.
-                // // $node_number = 14 + $offset;
-                // try {
-                //     $course_data['bm4_faltas'] = $this->getFieldValue($grade_row->filter('td')->eq($node_number++)->text()); // (int) $grade_row->filter('td')->eq(14)->text() ? (int) $grade_row->filter('td')->eq(10)->text() : null;
-                // } catch (\Exception $e) {
-                //     $course_data['bm4_faltas'] = null;
-                // }
-
-
-            // }
-
-            // if ($columns == 17) {
-            //     // When they have a 2 bimester course, their report card have 17 colums.
-            //     // 16 Columns like college students, plus an empty column instead of bm3 and bm4.
-            //     $offset = 1;
-            // } elseif ($columns == 20) {
-            //     // When they have a 4 bimester course, their report card will have 20 columns.
-            //     // Well grab the bm3 and bm4 data here, and add an offset to get the rest of the info.
-            //     $offset = 4;
-            //
-            //     // Third bimester, grade.
-            //     try {
-            //         $course_data['bm3_nota'] = $this->getFieldValue($grade_row->filter('td')->eq(11)->text()); // (int) $grade_row->filter('td')->eq(11)->text() ? (int) $grade_row->filter('td')->eq(7)->text() : null;
-            //     } catch (\Exception $e) {
-            //         $course_data['bm3_nota'] = null;
-            //     }
-            //
-            //     // Third bimester, absences.
-            //     try {
-            //         $course_data['bm3_faltas'] = $this->getFieldValue($grade_row->filter('td')->eq(12)->text()); // (int) $grade_row->filter('td')->eq(12)->text() ? (int) $grade_row->filter('td')->eq(8)->text() : null;
-            //     } catch (\Exception $e) {
-            //         $course_data['bm3_faltas'] = null;
-            //     }
-            //
-            //     // Fourth bimester, grade.
-            //     try {
-            //         $course_data['bm4_nota'] = $this->getFieldValue($grade_row->filter('td')->eq(13)->text()); // (int) $grade_row->filter('td')->eq(13)->text() ? (int) $grade_row->filter('td')->eq(9)->text() : null;
-            //     } catch (\Exception $e) {
-            //         $course_data['bm4_nota'] = null;
-            //     }
-            //
-            //     // Fourth bimester, absences.
-            //     try {
-            //         $course_data['bm4_faltas'] = $this->getFieldValue($grade_row->filter('td')->eq(14)->text()); // (int) $grade_row->filter('td')->eq(14)->text() ? (int) $grade_row->filter('td')->eq(10)->text() : null;
-            //     } catch (\Exception $e) {
-            //         $course_data['bm4_faltas'] = null;
-            //     }
-            // }
-
-
-
             // Average (grade).
             try {
-                $course_data['media'] = $this->getFieldValue($grade_row->filter('td')->eq($node_number++)->text()); // (int) $grade_row->filter('td')->eq($node_number)->text() ? (int) $grade_row->filter('td')->eq($node_number)->text() : null;
+                $course_data['media'] = $this->getFieldValue($grade_row->filter('td')->eq($node_number++)->text());
             } catch (\Exception $e) {
                 $course_data['media'] = null;
             }
 
             // NAF Grade.
             try {
-                $course_data['naf_nota'] = $this->getFieldValue($grade_row->filter('td')->eq($node_number++)->text()); // (int) $grade_row->filter('td')->eq($node_number)->text() ? (int) $grade_row->filter('td')->eq($node_number)->text() : null;
+                $course_data['naf_nota'] = $this->getFieldValue($grade_row->filter('td')->eq($node_number++)->text());
             } catch (\Exception $e) {
                 $course_data['naf_nota'] = null;
             }
 
             // NAF absences.
             try {
-                $course_data['naf_faltas'] = $this->getFieldValue($grade_row->filter('td')->eq($node_number++)->text()); //  (int) $grade_row->filter('td')->eq($node_number)->text() ? (int) $grade_row->filter('td')->eq($node_number)->text() : null;
+                $course_data['naf_faltas'] = $this->getFieldValue($grade_row->filter('td')->eq($node_number++)->text());
             } catch (\Exception $e) {
                 $course_data['naf_faltas'] = null;
             }
 
             // Final grade.
             try {
-                $course_data['mfd'] = $this->getFieldValue($grade_row->filter('td')->eq($node_number++)->text()); //  (int) $grade_row->filter('td')->eq($node_number)->text() ? (int) $grade_row->filter('td')->eq($node_number)->text() : null;
+                $course_data['mfd'] = $this->getFieldValue($grade_row->filter('td')->eq($node_number++)->text());
             } catch (\Exception $e) {
                 $course_data['mfd'] = null;
             }
@@ -503,14 +416,14 @@ class SUAPClient
     }
 
     /**
-     * Parse a report card field into a nice integer. Returns null if the field is a dash.
+     * Parse a report card field into an integer. Returns null if the field is a dash or empty.
      *
      * @param string $field Report card field.
      *
      * @return mixed Field int value or null.
      */
     private function getFieldValue($field) {
-        if (trim($field) == '-') {
+        if (trim($field) == '-' || trim($field) == '') {
             return null;
         }
         return (int) trim($field);
@@ -649,6 +562,8 @@ class SUAPClient
         $data['email_academico'] = trim($contact_info->filter('td')->eq(3)->text());
         $data['email_pessoal'] = trim($contact_info->filter('td')->eq(7)->text());
         $data['telefone'] = trim($contact_info->filter('td')->eq(9)->text());
+
+        // We won't scrap addresses and other more personal info.
 
         return $data;
     }
