@@ -308,7 +308,7 @@ class SUAPClient
 
             // Some high school courses, skips the 1st and 2nd bimesters.
             // If this course doesn't skip the 1st and 2nd bms...
-            if(! $skips_12bm) {
+            if (!$skips_12bm) {
 
                 // First bimester, grade.
                 try {
@@ -342,11 +342,10 @@ class SUAPClient
                 if ($skips_34bm) {
                     $node_number = 12;
                 }
-
             }
 
             // Some hich school courses only have classes during the 1st and 2nd bimesters.
-            if ($is_high_school && ! $skips_34bm) {
+            if ($is_high_school && !$skips_34bm) {
                 if ($skips_12bm) {
                     $node_number = 8;
                 }
@@ -422,10 +421,12 @@ class SUAPClient
      *
      * @return mixed Field int value or null.
      */
-    private function getFieldValue($field) {
+    private function getFieldValue($field)
+    {
         if (trim($field) == '-' || trim($field) == '') {
-            return null;
+            return;
         }
+
         return (int) trim($field);
     }
 
