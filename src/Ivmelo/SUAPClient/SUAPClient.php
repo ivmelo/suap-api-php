@@ -10,29 +10,82 @@ use Symfony\Component\DomCrawler\Crawler;
  */
 class SUAPClient
 {
+    /**
+     * The username SUAP. Usually, the student ID (matrícula).
+     *
+     * @var String
+     */
     private $username;
+
+    /**
+     * The password for SUAP. Either the student id or the parent access key.
+     *
+     * @var String
+     */
     private $password;
+
+    /**
+     * A Goutte client to make the requests.
+     *
+     * @var Goutte\Client
+     */
     private $client;
+
+    /**
+     * Symphony DOM Crawler, to scrap the pages.
+     *
+     * @var Symfony\Component\DomCrawler\Crawler
+     */
     private $crawler;
+
+    /**
+     * Student ID. Is set after logging in to SUAP.
+     *
+     * @var String
+     */
     private $matricula;
+
+    /**
+     * Endpoint for SUAP.
+     *
+     * @var String
+     */
     private $endpoint = 'https://suap.ifrn.edu.br';
+
+    /**
+     * Endpoint for student data.
+     *
+     * @var String
+     */
     private $aluno_endpoint = 'https://suap.ifrn.edu.br/edu/aluno/';
+
+    /**
+     * Endpoint to log in using access key.
+     *
+     * @var String
+     */
     private $responsavel_endpoint = 'https://suap.ifrn.edu.br/edu/acesso_responsavel/';
-    private $is_access_code = false;
+
+    /**
+     * Wether the username is an access key or not.
+     *
+     * @var Bool
+     */
+    private $is_access_key = false;
 
     /**
      * Construct function.
      *
-     * @param string $username       Matricula
-     * @param string $password       User's password
-     * @param bool   $is_access_code Whether use access code
+     * @param string $username      Matricula
+     * @param string $password      User's password
+     * @param bool   $is_access_key Whether use access code
      */
-    public function __construct($username = null, $password = null, $is_access_code = false)
+    public function __construct($username = null, $password = null, $is_access_key = false)
     {
         if ($username && $password) {
             $this->username = $username;
             $this->password = $password;
-            $this->is_access_code = $is_access_code;
+            $this->is_access_key = $is_access_key;
         }
 
         // Goutte client
@@ -52,13 +105,13 @@ class SUAPClient
      *
      * @param string $username       Matricula
      * @param string $password       User's password
-     * @param bool   $is_access_code Whether use access code
+     * @param bool   $is_access_key Whether use access code
      */
-    public function setCredentials($username, $password, $is_access_code)
+    public function setCredentials($username, $password, $is_access_key)
     {
         $this->username = $username;
         $this->password = $password;
-        $this->is_access_code = $is_access_code;
+        $this->is_access_key = $is_access_key;
     }
 
     /**
@@ -66,7 +119,7 @@ class SUAPClient
      */
     public function doLogin()
     {
-        if ($this->is_access_code) {
+        if ($this->is_access_key) {
             $this->doResponsavelLogin();
         } else {
             $this->doAlunoLogin();
@@ -419,12 +472,12 @@ class SUAPClient
      *
      * @param string $field Report card field.
      *
-     * @return mixed Field int value or null.
+     * @return int|null Field int value or null.
      */
     private function getFieldValue($field)
     {
         if (trim($field) == '-' || trim($field) == '') {
-            return;
+            return null;
         }
 
         return (int) trim($field);
