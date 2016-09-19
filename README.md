@@ -481,12 +481,10 @@ Array
 )
 ```
 
-### Horários de Aula semanal
-Para recuperar horários de aula, use o método ```getWeekSchedule()```.
+### Horários de Aula da Semana
+Para recuperar horários de aula da semana inteira, use o método ```getWeekSchedule()```.
 
-No retorno 1 representa o domingo, 2 a segunda, 3 a terça...
-
-Ex: para recuperar os horários da segunda feira:
+Nos arrays retornados 1 representa o domingo, 2 a segunda, 3 a terça...
 
 ```php
 $client->getWeekSchedule()
@@ -509,7 +507,7 @@ Array
                     [10:30 - 11:15] =>
                     [11:15 - 12:00] =>
                 )
-        
+
             [vespertino] => Array
                 (
                     [13:00 - 13:45] => Array
@@ -524,9 +522,9 @@ Array
                                 (
                                     [0] => Nome do Professor
                                 )
-        
+
                         )
-        
+
                     [13:45 - 14:30] => Array
                         (
                             [diario] => 7353
@@ -539,9 +537,9 @@ Array
                                 (
                                     [0] => Nome do Professor
                                 )
-        
+
                         )
-        
+
                     [14:40 - 15:25] => Array
                         (
                             [diario] => 7351
@@ -554,9 +552,9 @@ Array
                                 (
                                     [0] => Nome do Professor
                                 )
-        
+
                         )
-        
+
                     [15:25 - 16:10] => Array
                         (
                             [diario] => 7351
@@ -569,9 +567,9 @@ Array
                                 (
                                     [0] => Nome do Professor
                                 )
-        
+
                         )
-        
+
                     [16:30 - 17:15] => Array
                         (
                             [diario] => 7352
@@ -584,9 +582,9 @@ Array
                                 (
                                     [0] => Nome do Professor
                                 )
-        
+
                         )
-        
+
                     [17:15 - 18:00] => Array
                         (
                             [diario] => 7352
@@ -599,11 +597,11 @@ Array
                                 (
                                     [0] => Nome do Professor
                                 )
-        
+
                         )
-        
+
                 )
-        
+
             [noturno] => Array
                 (
                     [19:00 - 19:45] =>
@@ -611,7 +609,7 @@ Array
                     [20:40 - 21:25] =>
                     [21:25 - 22:10] =>
                 )
-        
+
         )
     [3] =>
         Array
