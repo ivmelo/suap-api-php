@@ -640,15 +640,22 @@ class SUAPClient
      *
      * @return array Class schedule for moning, afternoon and evening courses for each day.
      */
-    public function getWeekSchedule()
+    public function getWeekSchedule($ano_periodo = null)
     {
         if (!$this->matricula) {
             $this->doLogin();
         }
 
-        // Get data from schedule page.
-        $this->crawler = $this->client->request('GET', $this->aluno_endpoint.$this->matricula.'?tab=locais_aula_aluno');
+        // Endpoint.
+        $url = $this->aluno_endpoint.$this->matricula.'/?tab=locais_aula_aluno';
 
+        // If year/term is passed.
+        if ($ano_periodo) {
+            $url .= '&ano-periodo='.$ano_periodo;
+        }
+
+        // Get data from schedule page.
+        $this->crawler = $this->client->request('GET', $url);
         $tables = $this->crawler->filter('.box')->eq(2)->filter('table');
         $courses_data = $this->getCoursesData($this->crawler);
 
