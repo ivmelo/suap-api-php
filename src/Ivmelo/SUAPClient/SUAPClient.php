@@ -13,14 +13,14 @@ class SUAPClient
     /**
      * The username SUAP. Usually, the student ID (matrícula).
      *
-     * @var String
+     * @var string
      */
     private $username;
 
     /**
      * The password for SUAP. Either the student id or the parent access key.
      *
-     * @var String
+     * @var string
      */
     private $password;
 
@@ -41,35 +41,35 @@ class SUAPClient
     /**
      * Student ID. Is set after logging in to SUAP.
      *
-     * @var String
+     * @var string
      */
     private $matricula;
 
     /**
      * Endpoint for SUAP.
      *
-     * @var String
+     * @var string
      */
     private $endpoint = 'https://suap.ifrn.edu.br';
 
     /**
      * Endpoint for student data.
      *
-     * @var String
+     * @var string
      */
     private $aluno_endpoint = 'https://suap.ifrn.edu.br/edu/aluno/';
 
     /**
      * Endpoint to log in using access key.
      *
-     * @var String
+     * @var string
      */
     private $responsavel_endpoint = 'https://suap.ifrn.edu.br/edu/acesso_responsavel/';
 
     /**
      * Wether the username is an access key or not.
      *
-     * @var Bool
+     * @var bool
      */
     private $is_access_key = false;
 
@@ -103,8 +103,8 @@ class SUAPClient
     /**
      * Sets the credetials for this instance.
      *
-     * @param string $username       Matricula
-     * @param string $password       User's password
+     * @param string $username      Matricula
+     * @param string $password      User's password
      * @param bool   $is_access_key Whether use access code
      */
     public function setCredentials($username, $password, $is_access_key)
@@ -477,7 +477,7 @@ class SUAPClient
     private function getFieldValue($field)
     {
         if (trim($field) == '-' || trim($field) == '') {
-            return null;
+            return;
         }
 
         return (int) trim($field);
