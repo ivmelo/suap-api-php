@@ -21,16 +21,16 @@ try {
     $client = new SUAPClient($student_id, $suap_key, true);
 
     print_r($client->getGrades());
-    print_r($client->getGrades('2016.1'));
-    print_r($client->getStudentData());
-    print_r($client->getCourses());
-    print_r($client->getCourseData('TEC.0080'));
-    print_r($client->filterCoursesByName('teste paradigma'));
-    print_r($client->getClasses());
-    //$client->getClasses('2016.1')
-    print_r($client->getSchedule(2));
-    // print_r($client->getSchedule(2, '2016.1'));
-    print_r($client->getWeekSchedule());
+    // print_r($client->getGrades('2016.1'));
+    // print_r($client->getStudentData());
+    // print_r($client->getCourses());
+    // print_r($client->getCourseData('TEC.0080'));
+    // print_r($client->filterCoursesByName('teste paradigma'));
+    // print_r($client->getClasses());
+    // //$client->getClasses('2016.1')
+    // print_r($client->getSchedule(2));
+    // // print_r($client->getSchedule(2, '2016.1'));
+    // print_r($client->getWeekSchedule());
 } catch (Exception $e) {
     // Print exception message.
     // echo $e->getMessage();
