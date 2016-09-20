@@ -681,7 +681,7 @@ Você pode fazer algo como ```if(! empty($data))``` para saber se os dados foram
 A biblioteca utiliza um cliente HTTP para fazer os requests ao SUAP, e um DOM Parser para procurar e extrair as informações relevantes das páginas HTML.
 
 ### Desenvolvimento (Como contribuir)
-Para ajudar no Desenvolvimento, clone o repositório, instale as dependências e use o arquivo test.php que encontra-se na pasta tests. Você deve ser familiar com a rotina a seguir:
+Para ajudar no Desenvolvimento, clone o repositório, instale as dependências e use o arquivo test.php que encontra-se na pasta tests.
 
 ```bash
 $ git clone git@github.com:ivmelo/suap-api-php.git

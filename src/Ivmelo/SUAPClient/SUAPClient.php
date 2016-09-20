@@ -465,7 +465,7 @@ class SUAPClient
         }
 
         // The student has classes.
-        if (! empty($data)) {
+        if (!empty($data)) {
             // Place the date where it belongs...
             $all_data['data'] = $data;
 
@@ -477,7 +477,6 @@ class SUAPClient
                 $all_data['total_aulas'] = $this->getFieldValue($totals->filter('td')->eq(2)->text());
                 $all_data['total_faltas'] = $this->getFieldValue($totals->filter('td')->eq(3)->text());
                 $all_data['total_frequencia'] = $this->getFieldValue($totals->filter('td')->eq(4)->text());
-
             } catch (\Exception $e) {
                 // Technically, this should never happen.
                 $all_data['total_carga_horaria'] = $all_data['total_aulas'] = $all_data['total_faltas'] = $all_data['total_frequencia'] = null;
