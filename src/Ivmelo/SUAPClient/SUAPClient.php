@@ -465,7 +465,7 @@ class SUAPClient
         }
 
         // The student has classes.
-        if (! empty($data)) {
+        if (!empty($data)) {
             try {
                 // Get footer with totals:
                 $totals = $grades->filter('tfoot > tr');
@@ -481,7 +481,6 @@ class SUAPClient
                 // Technically, this should never happen.
                 $all_data['total_carga_horaria'] = $all_data['total_aulas'] = $all_data['total_faltas'] = $all_data['total_frequencia'] = null;
             }
-
         }
 
         return $data;
