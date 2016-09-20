@@ -20,7 +20,7 @@ try {
 
     $client = new SUAPClient($student_id, $suap_key, true);
 
-    print_r($client->getGrades());
+    print_r($client->getGrades('2016.1'));
     print_r($client->getGrades('2016.1'));
     print_r($client->getStudentData());
     print_r($client->getCourses());

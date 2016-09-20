@@ -7,35 +7,35 @@
 [![License](https://poser.pugx.org/ivmelo/suap-api-php/license)](https://packagist.org/packages/ivmelo/suap-api-php)
 [![Safadão](https://img.shields.io/badge/safadão-aprova-yellowgreen.svg)](https://img.shields.io/badge/safadão-aprova-yellowgreen.svg)
 
-Um cliente PHP (não oficial) para o SUAP (Sistema Unificado de Administração Publica) do IFRN.
+Um cliente PHP (não oficial) para o [SUAP (Sistema Unificado de Administração Publica)](http://portal.ifrn.edu.br/tec-da-informacao/servicos-ti/menus/servicos/copy2_of_suap) do IFRN.
 
 Este pacote permite que você tenha acesso aos dados do SUAP na sua aplicação PHP. (https://suap.ifrn.edu.br/)
 
 É o componente principal do [SUAP Bot](https://telegram.me/suapbot).
 
-Atualmente fornece informações de boletim (notas, frequência), cursos, horários e dados do aluno com alguns filtros e buscas simples.
+Atualmente fornece informações de boletim (notas, frequência), cursos, horários, locais de aula e dados do aluno com alguns filtros e e buscas simples.
 
-Ele faz [scraping](https://en.wikipedia.org/wiki/Web_scraping) nas páginas do SUAP em busca dos dados desejados. Porém no futuro pretende-se usar a API REST do SUAP que _segundo informações, está em desenvolvimento_.
+Atualmente os dados são obtidos através de [scraping](https://en.wikipedia.org/wiki/Web_scraping) nas páginas do SUAP em busca dos dados desejados. Porém no futuro pretende-se usar a API REST do SUAP que _segundo informações, está em desenvolvimento_.
 
 
 ### Instalação
 Este pacote está disponível através do composer.
 
-Adicione a dependência abaixo no composer.json e execute ```composer update```.
+Adicione a dependência abaixo no seu composer.json e execute ```composer update```.
 
 ```json
 "require": {
-    "ivmelo/suap-api-php": "0.1.*"
+    "ivmelo/suap-api-php": "0.2.*"
 }
 ```
 Alternativamente, você pode instalar direto pela linha de comando:
 
 ```bash
-$ composer require "ivmelo/suap-api-php": "0.1.*"
+$ composer require "ivmelo/suap-api-php": "0.2.*"
 ```
 
 ### Uso
-Você pode instanciar um cliente usando a matrícula do aluno e a senha ou a chave de acesso do responsável.
+Você pode instanciar um cliente usando a matrícula do aluno e a sua senha ou a sua chave de acesso do responsável.
 
 ```php
 $suap_client = SUAPClient('matricula', 'senha');
@@ -47,6 +47,7 @@ $suap_client = SUAPClient('matricula', 'chave_de_acesso', true);
 ```
 Repare que ao usar a chave de acesso, você precisa passar ```true``` como terceiro parâmetro do construtor.
 
+Para obter a chave de acesso, faça login no SUAP, e vá em "Meus Dados" > "Dados pessoais" > "Dados Gerais" e procure por "Chave de Acesso. Ela deve ter 5 dígitos e ser algo parecido com ```4d5f9```.
 
 
 ### Boletim
@@ -58,70 +59,102 @@ $grades = $suap_client->getGrades();
 
 A saída será um array com informações sobre a disciplina encontradas no boletim do aluno.
 
-```php
+Note que a partir da versão ```0.2.0```, este método também retorna os totais de aulas, faltas, frequência e carga horária.
+
+```
 Array
 (
-    [0] => Array
+    [data] => Array
         (
-            [diario] => 7441
-            [codigo] => TEC.0025
-            [disciplina] => Arquitetura de Software
-            [carga_horaria] => 80
-            [aulas] => 50
-            [faltas] => 16
-            [frequencia] => 68
-            [situacao] => cursando
-            [bm1_nota] =>
-            [bm1_faltas] => 6
-            [bm2_nota] =>
-            [bm2_faltas] => 10
-            [media] =>
-            [naf_nota] =>
-            [naf_faltas] =>
-            [mfd] =>
+            [0] => Array
+                (
+                    [diario] => 7441
+                    [codigo] => TEC.0025
+                    [disciplina] => Arquitetura de Software
+                    [carga_horaria] => 80
+                    [aulas] => 80
+                    [faltas] => 20
+                    [frequencia] => 75
+                    [situacao] => aprovado
+                    [bm1_nota] => 80
+                    [bm1_faltas] => 6
+                    [bm2_nota] => 35
+                    [bm2_faltas] => 14
+                    [media] => 53
+                    [naf_nota] => 90
+                    [naf_faltas] => 0
+                    [mfd] => 86
+                )
+
+            [1] => Array
+                (
+                    [diario] => 9693
+                    [codigo] => TEC.0077
+                    [disciplina] => Desenvolvimento de Jogos
+                    [carga_horaria] => 80
+                    [aulas] => 80
+                    [faltas] => 32
+                    [frequencia] => 60
+                    [situacao] => aprovado
+                    [bm1_nota] => 90
+                    [bm1_faltas] => 14
+                    [bm2_nota] => 60
+                    [bm2_faltas] => 18
+                    [media] => 72
+                    [naf_nota] =>
+                    [naf_faltas] => 0
+                    [mfd] => 72
+                )
+
+            [2] => Array
+                (
+                    [diario] => 7440
+                    [codigo] => TEC.0023
+                    [disciplina] => Desenvolvimento de Sistemas Distribuídos
+                    [carga_horaria] => 120
+                    [aulas] => 108
+                    [faltas] => 12
+                    [frequencia] => 89
+                    [situacao] => aprovado
+                    [bm1_nota] => 82
+                    [bm1_faltas] => 2
+                    [bm2_nota] => 46
+                    [bm2_faltas] => 10
+                    [media] => 60
+                    [naf_nota] =>
+                    [naf_faltas] => 0
+                    [mfd] => 60
+                )
+
+            [3] => Array
+                (
+                    [diario] => 7428
+                    [codigo] => TEC.0004
+                    [disciplina] => Epistemologia da Ciência
+                    [carga_horaria] => 40
+                    [aulas] => 36
+                    [faltas] => 16
+                    [frequencia] => 56
+                    [situacao] => cancelado
+                    [bm1_nota] => 0
+                    [bm1_faltas] => 16
+                    [bm2_nota] =>
+                    [bm2_faltas] => 0
+                    [media] => 0
+                    [naf_nota] =>
+                    [naf_faltas] => 0
+                    [mfd] => 0
+                )
+
+            ...
+
         )
 
-    [1] => Array
-        (
-            [diario] => 9693
-            [codigo] => TEC.0077
-            [disciplina] => Desenvolvimento de Jogos
-            [carga_horaria] => 80
-            [aulas] => 72
-            [faltas] => 28
-            [frequencia] => 62
-            [situacao] => cursando
-            [bm1_nota] => 90
-            [bm1_faltas] => 14
-            [bm2_nota] =>
-            [bm2_faltas] => 14
-            [media] => 36
-            [naf_nota] =>
-            [naf_faltas] =>
-            [mfd] => 36
-        )
-
-    [2] => Array
-        (
-            [diario] => 7440
-            [codigo] => TEC.0023
-            [disciplina] => Desenvolvimento de Sistemas Distribuídos
-            [carga_horaria] => 120
-            [aulas] => 96
-            [faltas] => 12
-            [frequencia] => 88
-            [situacao] => cursando
-            [bm1_nota] => 82
-            [bm1_faltas] => 2
-            [bm2_nota] =>
-            [bm2_faltas] => 10
-            [media] =>
-            [naf_nota] =>
-            [naf_faltas] =>
-            [mfd] =>
-        )
+    [total_carga_horaria] => 600
+    [total_aulas] => 584
+    [total_faltas] => 112
+    [total_frequencia] => 80
 )
-
 ```
 
 ### Dados do Aluno
@@ -133,7 +166,7 @@ $grades = $suap_client->getStudentData();
 
 A saída será um array com informações básicas do estudante e do curso.
 
-```php
+```
 Array
 (
     [nome] => Fulano da Silva
@@ -161,7 +194,7 @@ $courses = $suap_client->getCourses();
 
 O método retornará um array com a lista de disciplinas do semestre atual e seus respectivos códigos.
 
-```php
+```
 Array
 (
     [0] => Array
@@ -211,7 +244,7 @@ $course = $suap_client->getCourseData('TEC.0080');
 ```
 
 O retorno será um array com as notas dados da disciplina.
-```php
+```
 Array
 (
     [diario] => 16586
@@ -243,7 +276,7 @@ $data = $suap_client->getCousesByName('teste paradigma');
 
 O resultado será um array com a(s) disciplina(s) que contenha(m) o termo pesquisado no título.
 
-```php
+```
 Array
 (
     [0] => Array
@@ -297,7 +330,7 @@ $client->getClasses()
 ```
 
 O retorno será um array associativo com os dados das disciplinas.
-```php
+```
 Array
 (
     [TIN.0599] => Array
@@ -363,7 +396,7 @@ $client->getSchedule(2)
 
 Isso retornará um array associativo usando os horários como chave, e as informações do curso como valores.
 
-```php
+```
 Array
 (
     [matutino] => Array
@@ -492,7 +525,7 @@ $client->getWeekSchedule()
 
 Isso retornará um array associativo usando os dias da semana, seguido pelo turno e horários como chave, e as informações do curso como valores.
 
-```php
+```
 Array
 (
     [2] =>
@@ -634,16 +667,21 @@ Array
 ```
 
 ### E se não houver informações no SUAP?
-Caso alguma informação não seja encontrada no SUAP, os métodos retornarão arrays vazios.
+Caso alguma informação não seja encontrada no SUAP (Ex. Fim de semestre, aluno terminou o curso, etc...), os métodos retornarão arrays vazios.
+```
+Array
+(
+)
+```
 
-Você pode usar o método ```! empty($data)``` para saber se os dados foram retornados com sucesso.
+Você pode fazer algo como ```if(! empty($data))``` para saber se os dados foram retornados com sucesso.
 
 
 ### Massa! Como isso funciona?
 A biblioteca utiliza um cliente HTTP para fazer os requests ao SUAP, e um DOM Parser para procurar e extrair as informações relevantes das páginas HTML.
 
-### Desenvolvimento (Como contribuir.)
-Para ajudar no Desenvolvimento, clone o repositório, instale as dependências e use o arquivo test.php que encontra-se na pasta tests.
+### Desenvolvimento (Como contribuir)
+Para ajudar no Desenvolvimento, clone o repositório, instale as dependências e use o arquivo test.php que encontra-se na pasta tests. Você deve ser familiar com a rotina a seguir:
 
 ```bash
 $ git clone git@github.com:ivmelo/suap-api-php.git
@@ -653,16 +691,12 @@ $ cd tests
 $ php test.php <matricula> <chave>
 ```
 
+Altere o arquivo ```test.php``` de acordo com a sua preferência, mas evite comitar mudanças a menos que tenha adicionado alguma funcionalidade nova a biblioteca.
+
 O código em desenvolvimento mais recente está na branch ```dev```.
 
 ### Coisas a Fazer:
-1. Informações do Aluno; [DONE]
-1. Horário e Local de Aulas [DONE];
-1. Usar chave de acesso em vez de senha do aluno [DONE].
-1. Histórico do Aluno;
-1. Emitir documentos em PDF (declarações de matrícula, histórico, entre outros... Só funcionará se estiver autenticando com a senha).
-
-Veja a sessão de [Issues](https://github.com/ivmelo/suap-api-php/issues) para mais coisas a fazer.
+Veja a sessão de [Issues](https://github.com/ivmelo/suap-api-php/issues) para ver o que falta fazer ou se tem algum bug precisando de atenção.
 
 ### Licença
 The MIT License (MIT)
