@@ -624,7 +624,7 @@ class SUAPClient
         // Personal data.
         $data['nome'] = trim($info->filter('td')->eq(1)->text());
         $data['cpf'] = trim($info->filter('td')->eq(9)->text());
-        $data['foto_url'] = trim($this->endpoint . $photo->filter('img')->attr('src'));
+        $data['foto_url'] = trim($this->endpoint.$photo->filter('img')->attr('src'));
 
         // Academic data.
         $data['situacao'] = trim($info->filter('td')->eq(3)->text());
