@@ -1,14 +1,14 @@
 <?php
 
-namespace Ivmelo\SUAPClient;
+namespace Ivmelo\SUAP;
 
 use Goutte\Client;
 use Symfony\Component\DomCrawler\Crawler;
 
 /**
- * SUAPClient. Get data from SUAP.
+ * Get data from SUAP (Sistema Unificado de Administração Pública).
  */
-class SUAPClient
+class SUAP
 {
     /**
      * The username SUAP. Usually, the student ID (matrícula).
@@ -618,9 +618,13 @@ class SUAPClient
         // General data
         $info = $this->crawler->filter('table[class="info"]');
 
+        // Photo
+        $photo = $this->crawler->filter('div.foto-circle.big');
+
         // Personal data.
         $data['nome'] = trim($info->filter('td')->eq(1)->text());
         $data['cpf'] = trim($info->filter('td')->eq(9)->text());
+        $data['foto_url'] = trim($this->endpoint.$photo->filter('img')->attr('src'));
 
         // Academic data.
         $data['situacao'] = trim($info->filter('td')->eq(3)->text());

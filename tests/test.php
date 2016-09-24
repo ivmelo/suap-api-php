@@ -4,7 +4,7 @@ require dirname(__DIR__).'/vendor/autoload.php';
 
 error_reporting(E_ALL ^ E_NOTICE ^ E_WARNING);
 
-use Ivmelo\SUAPClient\SUAPClient;
+use Ivmelo\SUAP\SUAP;
 
 date_default_timezone_set('America/Fortaleza');
 
@@ -18,7 +18,7 @@ try {
     // $client = new SUAPClient('student_id', 'suap_password');
     // $client = new SUAPClient('student_id', 'suap_access_key', true);
 
-    $client = new SUAPClient($student_id, $suap_key, true);
+    $client = new SUAP($student_id, $suap_key, true);
 
     print_r($client->getGrades());
     print_r($client->getGrades('2016.1'));

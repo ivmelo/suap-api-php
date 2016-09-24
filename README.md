@@ -38,12 +38,12 @@ $ composer require "ivmelo/suap-api-php": "0.2.*"
 Você pode instanciar um cliente usando a matrícula do aluno e a sua senha ou a sua chave de acesso do responsável.
 
 ```php
-$suap_client = SUAPClient('matricula', 'senha');
+$suap = SUAP('matricula', 'senha');
 ```
 ou ainda
 
 ```php
-$suap_client = SUAPClient('matricula', 'chave_de_acesso', true);
+$suap = SUAP('matricula', 'chave_de_acesso', true);
 ```
 Repare que ao usar a chave de acesso, você precisa passar ```true``` como terceiro parâmetro do construtor.
 
@@ -54,7 +54,7 @@ Para obter a chave de acesso, faça login no SUAP, e vá em "Meus Dados" > "Dado
 Para receber dados do boletim do aluno, basta instanciar um cliente e chamar o método ```getGrades()```
 
 ```php
-$grades = $suap_client->getGrades();
+$grades = $suap->getGrades();
 ```
 
 A saída será um array com informações sobre a disciplina encontradas no boletim do aluno.
@@ -161,7 +161,7 @@ Array
 Para receber dados do aluno, basta chamar o método ```getStudentData()```.
 
 ```php
-$grades = $suap_client->getStudentData();
+$grades = $suap->getStudentData();
 ```
 
 A saída será um array com informações básicas do estudante e do curso.
@@ -189,7 +189,7 @@ Array
 Para receber uma lista de disciplinas e códigos, use o método ```getCourses()```
 
 ```php
-$courses = $suap_client->getCourses();
+$courses = $suap->getCourses();
 ```
 
 O método retornará um array com a lista de disciplinas do semestre atual e seus respectivos códigos.
@@ -240,7 +240,7 @@ Array
 Para pegar as notas/faltas de uma matéria específico, use o método ```getCourseData('course_code')``` passando o código da disciplina como parâmetro.
 
 ```php
-$course = $suap_client->getCourseData('TEC.0080');
+$course = $suap->getCourseData('TEC.0080');
 ```
 
 O retorno será um array com as notas dados da disciplina.
@@ -271,7 +271,7 @@ Você também pode fazer um filtro básico nas disciplinas do boletim.
 Para isso, basta chamar o método ```filterCoursesByName('query')``` passando os termos que desejam serem "pesquisados" nos nomes das disciplinas do boletim.
 
 ```php
-$data = $suap_client->getCousesByName('teste paradigma');
+$data = $suap->getCousesByName('teste paradigma');
 ```
 
 O resultado será um array com a(s) disciplina(s) que contenha(m) o termo pesquisado no título.
