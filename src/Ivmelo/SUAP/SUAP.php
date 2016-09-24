@@ -1,14 +1,14 @@
 <?php
 
-namespace Ivmelo\SUAPClient;
+namespace Ivmelo\SUAP;
 
 use Goutte\Client;
 use Symfony\Component\DomCrawler\Crawler;
 
 /**
- * SUAPClient. Get data from SUAP.
+ * Get data from SUAP (Sistema Unificado de Administração Pública).
  */
-class SUAPClient
+class SUAP
 {
     /**
      * The username SUAP. Usually, the student ID (matrícula).
