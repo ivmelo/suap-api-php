@@ -349,6 +349,14 @@ class SUAP
             // Get if it's a high school course.
             $is_high_school = ($columns != 16);
 
+            // Some courses doesn't have grades, averages and stuff. (Seminários).
+            if ($grade_row->filter('td')->eq(7)->attr('colspan') == '12') {
+                // In that case, we'll just skip all grade columns.
+                // Well do that by getting out of this loop.
+                array_push($data, $course_data);
+                continue;
+            }
+
             // Get wether the course skips the first and second bimester. (HIGH SCHOOL STUDENTS ONLY).
             $skips_12bm = ($grade_row->filter('td')->eq(7)->attr('colspan') == '4');
 
