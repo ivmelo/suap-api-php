@@ -345,6 +345,8 @@ class SUAP
             // To deal with that, we'll create an $node_number variable to adjust the node number accordingly.
             // When they have a 2 bimester course, their report card have 17 colums.
             // Some of those courses start in the 3rd bimester, well consider that later on.
+            
+            // If you're working on BIA: You're welcome.
 
             // Get if it's a high school course.
             $is_high_school = ($columns != 16);
