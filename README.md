@@ -5,7 +5,6 @@
 [![Latest Stable Version](https://poser.pugx.org/ivmelo/suap-api-php/v/stable)](https://packagist.org/packages/ivmelo/suap-api-php)
 [![Total Downloads](https://poser.pugx.org/ivmelo/suap-api-php/downloads)](https://packagist.org/packages/ivmelo/suap-api-php)
 [![License](https://poser.pugx.org/ivmelo/suap-api-php/license)](https://packagist.org/packages/ivmelo/suap-api-php)
-[![Safadão](https://img.shields.io/badge/safadão-aprova-yellowgreen.svg)](https://img.shields.io/badge/safadão-aprova-yellowgreen.svg)
 
 Um cliente PHP (não oficial) para o [SUAP (Sistema Unificado de Administração Publica)](http://portal.ifrn.edu.br/tec-da-informacao/servicos-ti/menus/servicos/copy2_of_suap) do IFRN.
 
