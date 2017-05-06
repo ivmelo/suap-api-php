@@ -33,7 +33,7 @@ class SUAP
     /**
      * Construct function.
      *
-     * @param String $token
+     * @param string $token
      */
     public function __construct($token = false)
     {
@@ -53,23 +53,23 @@ class SUAP
      *
      * @param string $username
      * @param string $password
-     * @param boolean $accessKey
-     * @param boolean $setToken
+     * @param bool   $accessKey
+     * @param bool   $setToken
      *
-     * @return Array $data
+     * @return array $data
      */
     public function autenticar($username, $password, $accessKey = false, $setToken = true)
     {
         // If accessing with a parent access key...
         if ($accessKey) {
-            $url = $this->endpoint . 'autenticacao/acesso_responsaveis/';
+            $url = $this->endpoint.'autenticacao/acesso_responsaveis/';
 
             $params = [
                 'matricula' => $username,
-                'chave' => $password,
+                'chave'     => $password,
             ];
         } else {
-            $url = $this->endpoint . 'autenticacao/token/';
+            $url = $this->endpoint.'autenticacao/token/';
 
             $params = [
                 'username' => $username,
@@ -78,7 +78,7 @@ class SUAP
         }
 
         $response = $this->client->request('POST', $url, [
-            'form_params' => $params
+            'form_params' => $params,
         ]);
 
         $data = false;
@@ -99,66 +99,74 @@ class SUAP
     /**
      * Set's the token for api access.
      *
-     * @param String $token
+     * @param string $token
      */
-    public function setToken($token) {
+    public function setToken($token)
+    {
         $this->token = $token;
     }
 
     /**
      * Get personal data for the authenticated student.
      *
-     * @return Array $data
+     * @return array $data
      */
-    public function getMeusDados() {
-        $url = $this->endpoint . 'minhas-informacoes/meus-dados/';
+    public function getMeusDados()
+    {
+        $url = $this->endpoint.'minhas-informacoes/meus-dados/';
+
         return $this->doGetRequest($url);
     }
 
     /**
      * Get report card data for the authenticated student.
      *
-     * @return Array $data
+     * @return array $data
      */
-    public function getMeuBoletim($year, $term) {
-        $url = $this->endpoint . 'minhas-informacoes/boletim/' . $year . '/' . $term . '/';
+    public function getMeuBoletim($year, $term)
+    {
+        $url = $this->endpoint.'minhas-informacoes/boletim/'.$year.'/'.$term.'/';
+
         return $this->doGetRequest($url);
     }
 
     /**
      * Get a listing of the student classes for a given term.
      *
-     * @return Array $data
+     * @return array $data
      */
-    public function getTurmasVirtuais($year, $term) {
-        $url = $this->endpoint . 'minhas-informacoes/turmas-virtuais/' . $year . '/' . $term . '/';
+    public function getTurmasVirtuais($year, $term)
+    {
+        $url = $this->endpoint.'minhas-informacoes/turmas-virtuais/'.$year.'/'.$term.'/';
+
         return $this->doGetRequest($url);
     }
 
     /**
      * Get details about a student class.
      *
-     * @return Array $data
+     * @return array $data
      */
-    public function getTurmaVirtual($id) {
-        $url = $this->endpoint . 'minhas-informacoes/turmas-virtuais/' . $id . '/';
+    public function getTurmaVirtual($id)
+    {
+        $url = $this->endpoint.'minhas-informacoes/turmas-virtuais/'.$id.'/';
+
         return $this->doGetRequest($url);
     }
-
 
     /**
      * Do a get request to a defined endpoint.
      *
-     * @param String $url
+     * @param string $url
      *
-     * @return Array $data
+     * @return array $data
      */
     private function doGetRequest($url)
     {
         $response = $this->client->request('GET', $url, [
             'headers' => [
-                'Authorization' => 'JWT ' . $this->token,
-            ]
+                'Authorization' => 'JWT '.$this->token,
+            ],
         ]);
 
         $data = false;
@@ -171,14 +179,13 @@ class SUAP
         return $data;
     }
 
-
     /**
      * Return the weekly schedule of a student.
      *
-     * @param Integer $year
-     * @param Integer $term
+     * @param int $year
+     * @param int $term
      *
-     * @return Array $schedules
+     * @return array $schedules
      */
     public function getHorarios($year, $term)
     {
@@ -204,7 +211,6 @@ class SUAP
         $shifts['N'][3]['hora'] = '20:40 - 21:25';
         $shifts['N'][4]['hora'] = '21:25 - 22:10';
 
-
         $schedule = [];
         $schedule[1] = $shifts;
         $schedule[2] = $shifts;
@@ -219,7 +225,6 @@ class SUAP
             $horarios = explode(' / ', $class['horarios_de_aula']);
 
             foreach ($horarios as $horario) {
-
                 $day = $horario[0];
                 $shift = $horario[1];
 
@@ -232,5 +237,4 @@ class SUAP
 
         return $schedule;
     }
-
 }
