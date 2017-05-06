@@ -49,22 +49,36 @@ class SUAP
     }
 
     /**
-     * Authenticate using the user's student ID and password.
+     * Authenticate user. Supports both password and access key.
      *
      * @param string $username
      * @param string $password
+     * @param bool   $accessKey
+     * @param bool   $setToken
      *
      * @return array $data
      */
-    public function autenticar($username, $password, $access_key = false, $setToken = true)
+    public function autenticar($username, $password, $accessKey = false, $setToken = true)
     {
-        $url = $this->endpoint.'autenticacao/token/';
+        // If accessing with a parent access key...
+        if ($accessKey) {
+            $url = $this->endpoint.'autenticacao/acesso_responsaveis/';
 
-        $response = $this->client->request('POST', $url, [
-            'form_params' => [
+            $params = [
+                'matricula' => $username,
+                'chave'     => $password,
+            ];
+        } else {
+            $url = $this->endpoint.'autenticacao/token/';
+
+            $params = [
                 'username' => $username,
                 'password' => $password,
-            ],
+            ];
+        }
+
+        $response = $this->client->request('POST', $url, [
+            'form_params' => $params,
         ]);
 
         $data = false;
