@@ -60,10 +60,14 @@ Array
 )
 ```
 
-O token será salvo no objeto para que seja reutilizado nos requests subsequentes.
+O token será salvo no objeto para que seja reutilizado nos requests subsequentes. Caso não deseje salvar o token, basta setar o quarto parâmetro do construtor como false: `autenticar($matricula, $senha, true, false)`.
 
-TODO: Chave de Acesso.
-Repare que ao usar a chave de acesso, você precisa passar ```true``` como terceiro parâmetro do construtor.
+Você também pode utilizar a chave de acesso de responsável para efetuar o login. Para isso, basta passar true como terceiro parâmetro do método `autenticar($matricula, $chave, true)`.
+
+```
+$suap = SUAP();
+$suap->autenticar('20121014040000', 'chave', true);
+```
 
 Para obter a chave de acesso, faça login no SUAP, e vá em "Meus Dados" > "Dados pessoais" > "Dados Gerais" e procure por "Chave de Acesso. Ela deve ter 5 dígitos e ser algo parecido com ```4d5f9```.
 
