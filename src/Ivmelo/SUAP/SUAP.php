@@ -166,29 +166,29 @@ class SUAP
      *
      * @return Array $schedules
      */
-    public function getAulas($year, $term)
+    public function getHorarios($year, $term)
     {
         $classes = $this->getTurmasVirtuais($year, $term);
 
         $shifts = [];
-        $shifts['M'][1]['time'] = '07:00 - 07:45';
-        $shifts['M'][2]['time'] = '07:45 - 08:30';
-        $shifts['M'][3]['time'] = '08:50 - 09:35';
-        $shifts['M'][4]['time'] = '09:35 - 10:20';
-        $shifts['M'][5]['time'] = '10:30 - 11:15';
-        $shifts['M'][6]['time'] = '11:15 - 12:00';
+        $shifts['M'][1]['hora'] = '07:00 - 07:45';
+        $shifts['M'][2]['hora'] = '07:45 - 08:30';
+        $shifts['M'][3]['hora'] = '08:50 - 09:35';
+        $shifts['M'][4]['hora'] = '09:35 - 10:20';
+        $shifts['M'][5]['hora'] = '10:30 - 11:15';
+        $shifts['M'][6]['hora'] = '11:15 - 12:00';
 
-        $shifts['V'][1]['time'] = '13:00 - 13:45';
-        $shifts['V'][2]['time'] = '13:45 - 14:30';
-        $shifts['V'][3]['time'] = '14:40 - 15:25';
-        $shifts['V'][4]['time'] = '15:25 - 16:10';
-        $shifts['V'][5]['time'] = '16:30 - 17:15';
-        $shifts['V'][6]['time'] = '17:15 - 18:00';
+        $shifts['V'][1]['hora'] = '13:00 - 13:45';
+        $shifts['V'][2]['hora'] = '13:45 - 14:30';
+        $shifts['V'][3]['hora'] = '14:40 - 15:25';
+        $shifts['V'][4]['hora'] = '15:25 - 16:10';
+        $shifts['V'][5]['hora'] = '16:30 - 17:15';
+        $shifts['V'][6]['hora'] = '17:15 - 18:00';
 
-        $shifts['N'][1]['time'] = '19:00 - 19:45';
-        $shifts['N'][2]['time'] = '19:45 - 20:30';
-        $shifts['N'][3]['time'] = '20:40 - 21:25';
-        $shifts['N'][4]['time'] = '21:25 - 22:10';
+        $shifts['N'][1]['hora'] = '19:00 - 19:45';
+        $shifts['N'][2]['hora'] = '19:45 - 20:30';
+        $shifts['N'][3]['hora'] = '20:40 - 21:25';
+        $shifts['N'][4]['hora'] = '21:25 - 22:10';
 
 
         $schedule = [];
