@@ -30,13 +30,13 @@ try {
 
     if (isset($token)) {
         $client->setToken($token); // You can use the constructor the same way.
-        // print_r($client->getMeusDados());
-        // print_r($client->getMeuBoletim(2016, 2));
-        // print_r($client->getTurmasVirtuais(2017, 1));
-        // print_r($client->getTurmaVirtual(23115));
+        print_r($client->getMeusDados());
+        print_r($client->getMeuBoletim(2016, 2));
+        print_r($client->getTurmasVirtuais(2017, 1));
+        print_r($client->getTurmaVirtual(23115));
         print_r($client->getHorarios(2017, 1));
     } else {
-        print_r($client->autenticar($student_id, $suap_key));
+        print_r($client->autenticar($student_id, $suap_key, true));
     }
 
 } catch (Exception $e) {
