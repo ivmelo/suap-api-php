@@ -53,8 +53,8 @@ class SUAP
      *
      * @param string $username
      * @param string $password
-     * @param boolean $accessKey
-     * @param boolean $setToken
+     * @param bool   $accessKey
+     * @param bool   $setToken
      *
      * @return array $data
      */
@@ -62,14 +62,14 @@ class SUAP
     {
         // If accessing with a parent access key...
         if ($accessKey) {
-            $url = $this->endpoint . 'autenticacao/acesso_responsaveis/';
+            $url = $this->endpoint.'autenticacao/acesso_responsaveis/';
 
             $params = [
                 'matricula' => $username,
-                'chave' => $password,
+                'chave'     => $password,
             ];
         } else {
-            $url = $this->endpoint . 'autenticacao/token/';
+            $url = $this->endpoint.'autenticacao/token/';
 
             $params = [
                 'username' => $username,
@@ -78,7 +78,7 @@ class SUAP
         }
 
         $response = $this->client->request('POST', $url, [
-            'form_params' => $params
+            'form_params' => $params,
         ]);
 
         $data = false;
