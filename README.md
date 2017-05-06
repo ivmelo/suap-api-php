@@ -6,161 +6,358 @@
 [![Total Downloads](https://poser.pugx.org/ivmelo/suap-api-php/downloads)](https://packagist.org/packages/ivmelo/suap-api-php)
 [![License](https://poser.pugx.org/ivmelo/suap-api-php/license)](https://packagist.org/packages/ivmelo/suap-api-php)
 
-Um cliente PHP (não oficial) para o [SUAP (Sistema Unificado de Administração Publica)](http://portal.ifrn.edu.br/tec-da-informacao/servicos-ti/menus/servicos/copy2_of_suap) do IFRN.
+Um wraper PHP para a API do [SUAP (Sistema Unificado de Administração Publica)](http://portal.ifrn.edu.br/tec-da-informacao/servicos-ti/menus/servicos/copy2_of_suap) do IFRN.
 
-Este pacote permite que você tenha acesso aos dados do SUAP na sua aplicação PHP. (https://suap.ifrn.edu.br/)
+Este pacote permite que você tenha acesso aos dados do SUAP na sua aplicação PHP. http://suap.ifrn.edu.br/api/docs/
 
 É o componente principal do [SUAP Bot](https://telegram.me/suapbot).
 
-Atualmente fornece informações de boletim (notas, frequência), cursos, horários, locais de aula e dados do aluno com alguns filtros e e buscas simples.
+Atualmente fornece informações de boletim (notas, frequência), cursos, horários, locais de aula e dados do aluno.
 
-Atualmente os dados são obtidos através de [scraping](https://en.wikipedia.org/wiki/Web_scraping) nas páginas do SUAP em busca dos dados desejados. Porém no futuro pretende-se usar a API REST do SUAP que _segundo informações, está em desenvolvimento_.
+Este pacote foi atualizado para pegar os dados através da API oficial do SUAP, e não mais fazendo web scraping. Caso deseje utilizar a versão que faz web scraping, veja as tags 0.2.X.
 
 
 ### Instalação
-Este pacote está disponível através do composer.
+Para instalar, recomenda-se o uso do [Composer](https://getcomposer.org).
 
 Adicione a dependência abaixo no seu composer.json e execute ```composer update```.
 
 ```json
 "require": {
-    "ivmelo/suap-api-php": "0.2.*"
+    "ivmelo/suap-api-php": "1.0.*"
 }
 ```
-Alternativamente, você pode instalar direto pela linha de comando:
+Alternativamente, você pode instalar diretamente pela linha de comando:
 
 ```bash
-$ composer require "ivmelo/suap-api-php": "0.2.*"
+$ composer require "ivmelo/suap-api-php": "1.0.*"
 ```
 
 ### Uso
-Você pode instanciar um cliente usando a matrícula do aluno e a sua senha ou a sua chave de acesso do responsável.
+Você pode instanciar um cliente usando um token de acesso, ou usar o construtor vazio.
 
 ```php
-$suap = SUAP('matricula', 'senha');
-```
-ou ainda
+$suap = SUAP('tokendeacessodoaluno');
+// ou
+$suap = SUAP();
 
-```php
-$suap = SUAP('matricula', 'chave_de_acesso', true);
 ```
+
+### Autenticação
+
+Para autenticar, basta usar chamar o método `autenticar($usuario, $chave)`.
+
+```
+$suap = SUAP();
+$suap->autenticar('20121014040000', 'senhaouchave');
+```
+
+O método retornará um array com um token de acesso.
+```
+Array
+(
+    [token] => eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9eyJ1c2VybmFtZSI6IjIwMTIxMDE0MDQwMDgzIiwib3JpZ19pYXQiOjE0OTQwMjcyMDksInVzZXJfaWQiOjEwODQyLCJlbWFpbCI6Iml2YW5pbHNvbi5tZWxvQGFjYWRlbWljby5pZnJuLmVkdS5iciIsImV4cCI6MTQ5NDExMzYwOX0
+)
+```
+
+O token será salvo no objeto para que seja reutilizado nos requests subsequentes.
+
+TODO: Chave de Acesso.
 Repare que ao usar a chave de acesso, você precisa passar ```true``` como terceiro parâmetro do construtor.
 
 Para obter a chave de acesso, faça login no SUAP, e vá em "Meus Dados" > "Dados pessoais" > "Dados Gerais" e procure por "Chave de Acesso. Ela deve ter 5 dígitos e ser algo parecido com ```4d5f9```.
 
 
 ### Boletim
-Para receber dados do boletim do aluno, basta instanciar um cliente e chamar o método ```getGrades()```
+Para receber dados do boletim do aluno, basta instanciar um cliente e chamar o método `getMeuBoletim($anoLetivo, $periodoLetivo)`.
 
-```php
-$grades = $suap->getGrades();
+```
+$boletim = $suap->getMeuBoletim(2017, 1);
 ```
 
 A saída será um array com informações sobre a disciplina encontradas no boletim do aluno.
 
-Note que a partir da versão ```0.2.0```, este método também retorna os totais de aulas, faltas, frequência e carga horária.
-
 ```
 Array
 (
-    [data] => Array
+    [0] => Array
         (
-            [0] => Array
+            [codigo_diario] => 15360
+            [disciplina] => TEC.0028 - Desenvolvimento de Sistemas Coorporativos
+            [segundo_semestre] =>
+            [carga_horaria] => 80
+            [carga_horaria_cumprida] => 76
+            [numero_faltas] => 8
+            [percentual_carga_horaria_frequentada] => 90
+            [situacao] => Aprovado
+            [quantidade_avaliacoes] => 2
+            [nota_etapa_1] => Array
                 (
-                    [diario] => 7441
-                    [codigo] => TEC.0025
-                    [disciplina] => Arquitetura de Software
-                    [carga_horaria] => 80
-                    [aulas] => 80
-                    [faltas] => 20
-                    [frequencia] => 75
-                    [situacao] => aprovado
-                    [bm1_nota] => 80
-                    [bm1_faltas] => 6
-                    [bm2_nota] => 35
-                    [bm2_faltas] => 14
-                    [media] => 53
-                    [naf_nota] => 90
-                    [naf_faltas] => 0
-                    [mfd] => 86
+                    [nota] => 92
+                    [faltas] => 0
                 )
 
-            [1] => Array
+            [nota_etapa_2] => Array
                 (
-                    [diario] => 9693
-                    [codigo] => TEC.0077
-                    [disciplina] => Desenvolvimento de Jogos
-                    [carga_horaria] => 80
-                    [aulas] => 80
-                    [faltas] => 32
-                    [frequencia] => 60
-                    [situacao] => aprovado
-                    [bm1_nota] => 90
-                    [bm1_faltas] => 14
-                    [bm2_nota] => 60
-                    [bm2_faltas] => 18
-                    [media] => 72
-                    [naf_nota] =>
-                    [naf_faltas] => 0
-                    [mfd] => 72
+                    [nota] => 50
+                    [faltas] => 8
                 )
 
-            [2] => Array
+            [nota_etapa_3] => Array
                 (
-                    [diario] => 7440
-                    [codigo] => TEC.0023
-                    [disciplina] => Desenvolvimento de Sistemas Distribuídos
-                    [carga_horaria] => 120
-                    [aulas] => 108
-                    [faltas] => 12
-                    [frequencia] => 89
-                    [situacao] => aprovado
-                    [bm1_nota] => 82
-                    [bm1_faltas] => 2
-                    [bm2_nota] => 46
-                    [bm2_faltas] => 10
-                    [media] => 60
-                    [naf_nota] =>
-                    [naf_faltas] => 0
-                    [mfd] => 60
+                    [nota] =>
+                    [faltas] => 0
                 )
 
-            [3] => Array
+            [nota_etapa_4] => Array
                 (
-                    [diario] => 7428
-                    [codigo] => TEC.0004
-                    [disciplina] => Epistemologia da Ciência
-                    [carga_horaria] => 40
-                    [aulas] => 36
-                    [faltas] => 16
-                    [frequencia] => 56
-                    [situacao] => cancelado
-                    [bm1_nota] => 0
-                    [bm1_faltas] => 16
-                    [bm2_nota] =>
-                    [bm2_faltas] => 0
-                    [media] => 0
-                    [naf_nota] =>
-                    [naf_faltas] => 0
-                    [mfd] => 0
+                    [nota] =>
+                    [faltas] => 0
                 )
 
-            ...
+            [media_disciplina] => 67
+            [nota_avaliacao_final] => Array
+                (
+                    [nota] =>
+                    [faltas] => 0
+                )
 
+            [media_final_disciplina] => 67
         )
 
-    [total_carga_horaria] => 600
-    [total_aulas] => 584
-    [total_faltas] => 112
-    [total_frequencia] => 80
+    [1] => Array
+        (
+            [codigo_diario] => 15359
+            [disciplina] => TEC.0010 - Empreendedorismo
+            [segundo_semestre] =>
+            [carga_horaria] => 40
+            [carga_horaria_cumprida] => 40
+            [numero_faltas] => 6
+            [percentual_carga_horaria_frequentada] => 85
+            [situacao] => Aprovado
+            [quantidade_avaliacoes] => 2
+            [nota_etapa_1] => Array
+                (
+                    [nota] => 80
+                    [faltas] => 2
+                )
+
+            [nota_etapa_2] => Array
+                (
+                    [nota] => 100
+                    [faltas] => 4
+                )
+
+            [nota_etapa_3] => Array
+                (
+                    [nota] =>
+                    [faltas] => 0
+                )
+
+            [nota_etapa_4] => Array
+                (
+                    [nota] =>
+                    [faltas] => 0
+                )
+
+            [media_disciplina] => 92
+            [nota_avaliacao_final] => Array
+                (
+                    [nota] =>
+                    [faltas] => 0
+                )
+
+            [media_final_disciplina] => 92
+        )
+
+    [2] => Array
+        (
+            [codigo_diario] => 15361
+            [disciplina] => TEC.0029 - Gerencia de Projetos
+            [segundo_semestre] =>
+            [carga_horaria] => 80
+            [carga_horaria_cumprida] => 80
+            [numero_faltas] => 2
+            [percentual_carga_horaria_frequentada] => 98
+            [situacao] => Aprovado
+            [quantidade_avaliacoes] => 2
+            [nota_etapa_1] => Array
+                (
+                    [nota] => 50
+                    [faltas] => 2
+                )
+
+            [nota_etapa_2] => Array
+                (
+                    [nota] => 100
+                    [faltas] => 0
+                )
+
+            [nota_etapa_3] => Array
+                (
+                    [nota] =>
+                    [faltas] => 0
+                )
+
+            [nota_etapa_4] => Array
+                (
+                    [nota] =>
+                    [faltas] => 0
+                )
+
+            [media_disciplina] => 80
+            [nota_avaliacao_final] => Array
+                (
+                    [nota] =>
+                    [faltas] => 0
+                )
+
+            [media_final_disciplina] => 80
+        )
+
+    [3] => Array
+        (
+            [codigo_diario] => 16586
+            [disciplina] => TEC.0080 - Paradigmas de Linguagens de Programação
+            [segundo_semestre] =>
+            [carga_horaria] => 80
+            [carga_horaria_cumprida] => 76
+            [numero_faltas] => 30
+            [percentual_carga_horaria_frequentada] => 61
+            [situacao] => Aprovado
+            [quantidade_avaliacoes] => 2
+            [nota_etapa_1] => Array
+                (
+                    [nota] => 74
+                    [faltas] => 12
+                )
+
+            [nota_etapa_2] => Array
+                (
+                    [nota] => 90
+                    [faltas] => 18
+                )
+
+            [nota_etapa_3] => Array
+                (
+                    [nota] =>
+                    [faltas] => 0
+                )
+
+            [nota_etapa_4] => Array
+                (
+                    [nota] =>
+                    [faltas] => 0
+                )
+
+            [media_disciplina] => 84
+            [nota_avaliacao_final] => Array
+                (
+                    [nota] =>
+                    [faltas] => 0
+                )
+
+            [media_final_disciplina] => 84
+        )
+
+    [4] => Array
+        (
+            [codigo_diario] => 15362
+            [disciplina] => TEC.0034 - Seminário de Orientação ao Projeto de Desenvolvimento de Sistema Coorporativo
+            [segundo_semestre] =>
+            [carga_horaria] => 40
+            [carga_horaria_cumprida] => 40
+            [numero_faltas] => 8
+            [percentual_carga_horaria_frequentada] => 80
+            [situacao] => Aprovado
+            [quantidade_avaliacoes] => 2
+            [nota_etapa_1] => Array
+                (
+                    [nota] => 65
+                    [faltas] => 6
+                )
+
+            [nota_etapa_2] => Array
+                (
+                    [nota] => 65
+                    [faltas] => 2
+                )
+
+            [nota_etapa_3] => Array
+                (
+                    [nota] =>
+                    [faltas] => 0
+                )
+
+            [nota_etapa_4] => Array
+                (
+                    [nota] =>
+                    [faltas] => 0
+                )
+
+            [media_disciplina] => 65
+            [nota_avaliacao_final] => Array
+                (
+                    [nota] =>
+                    [faltas] => 0
+                )
+
+            [media_final_disciplina] => 65
+        )
+
+    [5] => Array
+        (
+            [codigo_diario] => 15363
+            [disciplina] => TEC.0030 - Teste de Software
+            [segundo_semestre] =>
+            [carga_horaria] => 80
+            [carga_horaria_cumprida] => 72
+            [numero_faltas] => 24
+            [percentual_carga_horaria_frequentada] => 67
+            [situacao] => Aprovado
+            [quantidade_avaliacoes] => 2
+            [nota_etapa_1] => Array
+                (
+                    [nota] => 47
+                    [faltas] => 20
+                )
+
+            [nota_etapa_2] => Array
+                (
+                    [nota] => 73
+                    [faltas] => 4
+                )
+
+            [nota_etapa_3] => Array
+                (
+                    [nota] =>
+                    [faltas] => 0
+                )
+
+            [nota_etapa_4] => Array
+                (
+                    [nota] =>
+                    [faltas] => 0
+                )
+
+            [media_disciplina] => 63
+            [nota_avaliacao_final] => Array
+                (
+                    [nota] =>
+                    [faltas] => 0
+                )
+
+            [media_final_disciplina] => 63
+        )
+
 )
 ```
 
 ### Dados do Aluno
-Para receber dados do aluno, basta chamar o método ```getStudentData()```.
+Para receber dados do aluno, basta chamar o método `getMeusDados()`.
 
 ```php
-$grades = $suap->getStudentData();
+$meusDados = $suap->getMeusDados();
 ```
 
 A saída será um array com informações básicas do estudante e do curso.
@@ -168,346 +365,455 @@ A saída será um array com informações básicas do estudante e do curso.
 ```
 Array
 (
-    [nome] => Fulano da Silva
-    [situacao] => Matriculado
+    [id] => 123456
     [matricula] => 20121014040000
-    [ingresso] => 2012/1
-    [cpf] => 123.456.789-00
-    [periodo_referencia] => 4
-    [ira] => 90.00
-    [curso] => 01404 - Tecnologia em Análise e Desenvolvimento de Sistemas (2012) - Campus Natal-Central (CAMPUS NATAL - CENTRAL)
-    [matriz] => 91 - Tecnologia em Análise e Desenvolvimento de Sistemas (2012)
-    [email_academico] => fulano.dasilva@academico.ifrn.edu.br
-    [email_pessoal] => email@example.com
-    [telefone] => (84) 98765-4321
-)
+    [nome_usual] => Nome Sobrenome
+    [email] => nome.sobrenome@academico.ifrn.edu.br
+    [url_foto_75x100] => /media/alunos/000000.jpg
+    [tipo_vinculo] => Aluno
+    [vinculo] => Array
+        (
+            [matricula] => 20121014040000
+            [nome] => Nome Completo Do Estudante
+            [curso] => Tecnologia em Análise e Desenvolvimento de Sistemas
+            [campus] => CNAT
+            [situacao] => Matriculado
+            [cota_sistec] =>
+            [cota_mec] =>
+            [situacao_sistemica] => Migrado do Q-Acadêmico para o SUAP
+        )
 
+)
 ```
 
-### Lista de Disciplinas
-Para receber uma lista de disciplinas e códigos, use o método ```getCourses()```
+### Listagem de Turmas Virtuais
+Para visualizar a listagem das turmas virtuais, incluindo ids, horários e locais de aula, use o método `getTurmasVirtuais($anoLetivo, $periodoLetivo)`.
 
 ```php
-$courses = $suap->getCourses();
+$turmasVirtuais = $suap->getTurmasVirtuais(2017, 1);
 ```
 
-O método retornará um array com a lista de disciplinas do semestre atual e seus respectivos códigos.
+O método retornará um array com a lista de disciplinas do semestre atual junto com outras informações sobre as mesmas.
 
 ```
-Array
 (
     [0] => Array
         (
-            [codigo] => TEC.0028
-            [disciplina] => Desenvolvimento de Sistemas Coorporativos
+            [id] => 20118
+            [sigla] => TEC.0011
+            [descricao] => Gestão de Tecnologia da Informação
+            [observacao] =>
+            [locais_de_aula] => Array
+                (
+                    [0] => Audio de Visual 03 - DIATINF - Prédio Anexo - 1º Andar (CNAT)
+                )
+
+            [horarios_de_aula] => 2V34 / 3V56
         )
 
     [1] => Array
         (
-            [codigo] => TEC.0010
-            [disciplina] => Empreendedorismo
+            [id] => 20119
+            [sigla] => TEC.0012
+            [descricao] => Computador e Sociedade
+            [observacao] =>
+            [locais_de_aula] => Array
+                (
+                    [0] => Audio de Visual 03 - DIATINF - Prédio Anexo - 1º Andar (CNAT)
+                )
+
+            [horarios_de_aula] => 3V34
         )
 
     [2] => Array
         (
-            [codigo] => TEC.0029
-            [disciplina] => Gerencia de Projetos
+            [id] => 20120
+            [sigla] => TEC.0036
+            [descricao] => Seminário de Orientação para Trabalho de Conclusão de Curso
+            [observacao] =>
+            [locais_de_aula] => Array
+                (
+                    [0] => Audio de Visual 03 - DIATINF - Prédio Anexo - 1º Andar (CNAT)
+                )
+
+            [horarios_de_aula] => 4V34
         )
 
     [3] => Array
         (
-            [codigo] => TEC.0080
-            [disciplina] => Paradigmas de Linguagens de Programação
+            [id] => 20102
+            [sigla] => TEC.0004
+            [descricao] => Epistemologia da Ciência
+            [observacao] =>
+            [locais_de_aula] => Array
+                (
+                    [0] => Audio de Visual 02 - DIATINF - Informática (CNAT)
+                )
+
+            [horarios_de_aula] => 3M56
         )
 
     [4] => Array
         (
-            [codigo] => TEC.0034
-            [disciplina] => Seminário de Orientação ao Projeto de Desenvolvimento de Sistema Coorporativo
+            [id] => 23115
+            [sigla] => TEC.0075
+            [descricao] => Aplicações com Interfaces Ricas
+            [observacao] =>
+            [locais_de_aula] => Array
+                (
+                    [0] => Laboratório 06 - DIATINF - Informática (CNAT)
+                )
+
+            [horarios_de_aula] => 2M56 / 4M56
+        )
+
+)
+```
+
+### Detalhes de Turma Virtual
+Para visualizar os detalhes de uma turma virtual, basta usar o método `getTurmaVirtual($idDaTurma)`.
+
+```
+$course = $suap->getTurmaVirtual(23115);
+```
+
+O retorno será um array com os detalhes da turma incluindo participantes, aulas, materiais de aula, professores e etc...
+```
+Array
+(
+    [id] => 23115
+    [ano_letivo] => 2017
+    [periodo_letivo] => 1
+    [componente_curricular] => TEC.0075 - Aplicações com Interfaces Ricas (NCT) - Graduação [60 h/80 Aulas] - Curso 404
+    [professores] => Array
+        (
+            [0] => Array
+                (
+                    [matricula] => 123456
+                    [foto] => /media/fotos/75x100/ABCEDF000000.jpg
+                    [email] => email.professor@ifrn.edu.br
+                    [nome] => Nome do Professor
+                )
+
+        )
+
+    [locais_de_aula] => Array
+        (
+            [0] => Laboratório 06 - DIATINF - Informática (CNAT)
+        )
+
+    [data_inicio] => 2017-03-21
+    [data_fim] => 2017-08-01
+    [participantes] => Array
+        (
+            [0] => Array
+                (
+                    [matricula] => 20121000000000
+                    [foto] => /media/alunos/75x100/000000.jpg
+                    [email] => email.do.aluno@academico.ifrn.edu.br
+                    [nome] => Nome do Aluno
+                )
+
+            [1] => Array
+                (
+                    [matricula] => 20121000000000
+                    [foto] => /media/alunos/75x100/000000.jpg
+                    [email] => email.do.aluno@academico.ifrn.edu.br
+                    [nome] => Nome do Aluno
+                )
+
+            [2] => Array
+                (
+                    [matricula] => 20121000000000
+                    [foto] => /media/alunos/75x100/000000.jpg
+                    [email] => email.do.aluno@academico.ifrn.edu.br
+                    [nome] => Nome do Aluno
+                )
+
+            [3] => Array
+                (
+                    [matricula] => 20121000000000
+                    [foto] => /media/alunos/75x100/000000.jpg
+                    [email] => email.do.aluno@academico.ifrn.edu.br
+                    [nome] => Nome do Aluno
+                )
+
+        )
+
+    [aulas] => Array
+        (
+            [0] => Array
+                (
+                    [etapa] => 1
+                    [professor] => Nome do Professor
+                    [quantidade] => 2
+                    [faltas] => 0
+                    [conteudo] => Isolated Storage.
+                    [data] => 2017-05-03
+                )
+
+            [1] => Array
+                (
+                    [etapa] => 1
+                    [professor] => Nome do Professor
+                    [quantidade] => 2
+                    [faltas] => 2
+                    [conteudo] => Treinamento em Python.
+                    [data] => 2017-04-26
+                )
+
+            [2] => Array
+                (
+                    [etapa] => 1
+                    [professor] => Nome do Professor
+                    [quantidade] => 2
+                    [faltas] => 0
+                    [conteudo] => Introdução ao Python.
+                    [data] => 2017-04-24
+                )
+
+        )
+
+    [materiais_de_aula] => Array
+        (
+            [0] => Array
+                (
+                    [url] => /media/edu/material_aula/material_de_aula.pdf
+                    [data_vinculacao] => 2017-04-18
+                    [descricao] => Exemplo Silverlight (DataGrid)
+                )
+
+            [1] => Array
+                (
+                    [url] => /media/edu/material_aula/material_de_aula.pdf
+                    [data_vinculacao] => 2017-04-07
+                    [descricao] => Estilos no Silverlight (Exemplos)
+                )
+
+            [2] => Array
+                (
+                    [url] => /media/edu/material_aula/material_de_aula.pdf
+                    [data_vinculacao] => 2017-04-05
+                    [descricao] => Silverlight Exemplos01
+                )
+        )
+
+)
+
+```
+
+### Horários de Aula
+Para recuperar horários de aula no formato de array, use o método `getHorarios($anoLetivo, $periodoLetivo)`.
+
+```php
+$horarios = $suap->getHorarios(2017, 1);
+```
+
+Isso retornará um array associativo usando dias da semana como chave (1: dom, 2: seg, 3: ter...), o turno como subchave (M: matutino, V: vespertino, N: noturno) e o slot da aula como segunda subchave(1-6).
+
+I.E. Para pegar a quarta aula da terça feira a tarde:
+```
+print_r($schedule[3]['V'][4]);
+```
+
+O retorno do método pode ser visto a seguir (Algumas partes foram omitidas usando `...`).
+```
+Array
+(
+    [1] => Array
+        (
+            [M] => Array
+                (
+                    ...
+                )
+
+            [V] => Array
+                (
+                    ...
+                )
+
+            [N] => Array
+                (
+                    ...
+                )
+
+        )
+
+    [2] => Array
+        (
+            [M] => Array
+                (
+                    [1] => Array
+                        (
+                            [time] => 07:00 - 07:45
+                        )
+
+                    [2] => Array
+                        (
+                            [time] => 07:45 - 08:30
+                        )
+
+                    [3] => Array
+                        (
+                            [time] => 08:50 - 09:35
+                        )
+
+                    [4] => Array
+                        (
+                            [time] => 09:35 - 10:20
+                        )
+
+                    [5] => Array
+                        (
+                            [time] => 10:30 - 11:15
+                            [aula] => Array
+                                (
+                                    [id] => 23115
+                                    [sigla] => TEC.0075
+                                    [descricao] => Aplicações com Interfaces Ricas
+                                    [observacao] =>
+                                    [locais_de_aula] => Array
+                                        (
+                                            [0] => Laboratório 06 - DIATINF - Informática (CNAT)
+                                        )
+
+                                    [horarios_de_aula] => 2M56 / 4M56
+                                )
+
+                        )
+
+                    [6] => Array
+                        (
+                            [time] => 11:15 - 12:00
+                            [aula] => Array
+                                (
+                                    [id] => 23115
+                                    [sigla] => TEC.0075
+                                    [descricao] => Aplicações com Interfaces Ricas
+                                    [observacao] =>
+                                    [locais_de_aula] => Array
+                                        (
+                                            [0] => Laboratório 06 - DIATINF - Informática (CNAT)
+                                        )
+
+                                    [horarios_de_aula] => 2M56 / 4M56
+                                )
+
+                        )
+
+                )
+
+            [V] => Array
+                (
+                    [1] => Array
+                        (
+                            [time] => 13:00 - 13:45
+                        )
+
+                    [2] => Array
+                        (
+                            [time] => 13:45 - 14:30
+                        )
+
+                    [3] => Array
+                        (
+                            [time] => 14:40 - 15:25
+                            [aula] => Array
+                                (
+                                    [id] => 20118
+                                    [sigla] => TEC.0011
+                                    [descricao] => Gestão de Tecnologia da Informação
+                                    [observacao] =>
+                                    [locais_de_aula] => Array
+                                        (
+                                            [0] => Audio de Visual 03 - DIATINF - Prédio Anexo - 1º Andar (CNAT)
+                                        )
+
+                                    [horarios_de_aula] => 2V34 / 3V56
+                                )
+
+                        )
+
+                    [4] => Array
+                        (
+                            [time] => 15:25 - 16:10
+                            [aula] => Array
+                                (
+                                    [id] => 20118
+                                    [sigla] => TEC.0011
+                                    [descricao] => Gestão de Tecnologia da Informação
+                                    [observacao] =>
+                                    [locais_de_aula] => Array
+                                        (
+                                            [0] => Audio de Visual 03 - DIATINF - Prédio Anexo - 1º Andar (CNAT)
+                                        )
+
+                                    [horarios_de_aula] => 2V34 / 3V56
+                                )
+
+                        )
+
+                    [5] => Array
+                        (
+                            [time] => 16:30 - 17:15
+                        )
+
+                    [6] => Array
+                        (
+                            [time] => 17:15 - 18:00
+                        )
+
+                )
+
+            [N] => Array
+                (
+                    [1] => Array
+                        (
+                            [time] => 19:00 - 19:45
+                        )
+
+                    [2] => Array
+                        (
+                            [time] => 19:45 - 20:30
+                        )
+
+                    [3] => Array
+                        (
+                            [time] => 20:40 - 21:25
+                        )
+
+                    [4] => Array
+                        (
+                            [time] => 21:25 - 22:10
+                        )
+
+                )
+
+        )
+
+    [3] => Array
+        (
+            ...
+        )
+
+    [4] => Array
+        (
+            ...
         )
 
     [5] => Array
         (
-            [codigo] => TEC.0030
-            [disciplina] => Teste de Software
+            ...
         )
 
-)
-```
-
-### Notas/Faltas de Uma Matéria Específica
-Para pegar as notas/faltas de uma matéria específico, use o método ```getCourseData('course_code')``` passando o código da disciplina como parâmetro.
-
-```php
-$course = $suap->getCourseData('TEC.0080');
-```
-
-O retorno será um array com as notas dados da disciplina.
-```
-Array
-(
-    [diario] => 16586
-    [codigo] => TEC.0080
-    [disciplina] => Paradigmas de Linguagens de Programação
-    [carga_horaria] => 80
-    [aulas] =>
-    [faltas] =>
-    [frequencia] => 100
-    [situacao] => cursando
-    [bm1_nota] =>
-    [bm1_faltas] =>
-    [bm2_nota] =>
-    [bm2_faltas] =>
-    [media] =>
-    [naf_nota] =>
-    [naf_faltas] =>
-    [mfd] =>
-)
-```
-
-### Filtrar Disciplinas por Nome
-Você também pode fazer um filtro básico nas disciplinas do boletim.
-Para isso, basta chamar o método ```filterCoursesByName('query')``` passando os termos que desejam serem "pesquisados" nos nomes das disciplinas do boletim.
-
-```php
-$data = $suap->getCousesByName('teste paradigma');
-```
-
-O resultado será um array com a(s) disciplina(s) que contenha(m) o termo pesquisado no título.
-
-```
-Array
-(
-    [0] => Array
+    [6] => Array
         (
-            [diario] => 16586
-            [codigo] => TEC.0080
-            [disciplina] => Paradigmas de Linguagens de Programação
-            [carga_horaria] => 80
-            [aulas] =>
-            [faltas] =>
-            [frequencia] => 100
-            [situacao] => cursando
-            [bm1_nota] =>
-            [bm1_faltas] =>
-            [bm2_nota] =>
-            [bm2_faltas] =>
-            [media] =>
-            [naf_nota] =>
-            [naf_faltas] =>
-            [mfd] =>
+            ...
         )
 
-    [1] => Array
+    [7] => Array
         (
-            [diario] => 15363
-            [codigo] => TEC.0030
-            [disciplina] => Teste de Software
-            [carga_horaria] => 80
-            [aulas] =>
-            [faltas] =>
-            [frequencia] => 100
-            [situacao] => cursando
-            [bm1_nota] =>
-            [bm1_faltas] =>
-            [bm2_nota] =>
-            [bm2_faltas] =>
-            [media] =>
-            [naf_nota] =>
-            [naf_faltas] =>
-            [mfd] =>
-        )
-
-)
-```
-
-### Informações Sobre Disciplinas
-A biblioteca também permite que você recupere dados de disciplina, incluindo locais de aula, horários, tipo, carga horária e nome dos professores.
-
-```php
-$client->getClasses()
-```
-
-O retorno será um array associativo com os dados das disciplinas.
-```
-Array
-(
-    [TIN.0599] => Array
-        (
-            [diario] => 7351
-            [codigo] => TIN.0599
-            [disciplina] => Programação Orientada a Serviços(120H)
-            [tipo] => Médio [120 h/160 Aulas]
-            [local] => Laboratório de informática 04 - DIATINF - Informática (CNAT)
-            [horario] => 2V34 / 5V56
-            [professores] => Array
-                (
-                    [0] => Nome do Professor
-                )
-
-        )
-
-    [TIN.0244] => Array
-        (
-            [diario] => 7353
-            [codigo] => TIN.0244
-            [disciplina] => Gestão Organizacional(30H)
-            [tipo] => Médio [30 h/40 Aulas]
-            [local] => C-21 - Bloco C (CNAT)
-            [horario] => 2V12
-            [professores] => Array
-                (
-                    [0] => Nome do Professor
-                    [1] => Nome do Outro Professor
-                )
-
-        )
-
-    [TIN.0400] => Array
-        (
-            [diario] => 13727
-            [codigo] => TIN.0400
-            [disciplina] => Francês(90H)
-            [tipo] => Médio [90 h/120 Aulas]
-            [local] => -
-            [horario] => 3V123
-            [professores] => Array
-                (
-                    [0] => Nome do Professor
-                )
-
-        )
-)
-```
-
-Note que o formato das informações podem conter pequenas variações de acordo de o tipo de programa cursado pelo aluno (superior, médio, técnico, etc...).
-
-### Horários de Aula
-Para recuperar horários de aula, use o método ```getSchedule(dia_da_semana)``` passando o dia da semana (int) como parâmetro.
-
-1 para domingo, 2 para segunda, 3 para terça...
-
-Ex: para recuperar os horários da segunda feira:
-
-```php
-$client->getSchedule(2)
-```
-
-Isso retornará um array associativo usando os horários como chave, e as informações do curso como valores.
-
-```
-Array
-(
-    [matutino] => Array
-        (
-            [07:00 - 07:45] =>
-            [07:45 - 08:30] =>
-            [08:50 - 09:35] =>
-            [09:35 - 10:20] =>
-            [10:30 - 11:15] =>
-            [11:15 - 12:00] =>
-        )
-
-    [vespertino] => Array
-        (
-            [13:00 - 13:45] => Array
-                (
-                    [diario] => 7353
-                    [codigo] => TIN.0244
-                    [disciplina] => Gestão Organizacional(30H)
-                    [tipo] => Médio [30 h/40 Aulas]
-                    [local] => C-21 - Bloco C (CNAT)
-                    [horario] => 2V12
-                    [professores] => Array
-                        (
-                            [0] => Nome do Professor
-                        )
-
-                )
-
-            [13:45 - 14:30] => Array
-                (
-                    [diario] => 7353
-                    [codigo] => TIN.0244
-                    [disciplina] => Gestão Organizacional(30H)
-                    [tipo] => Médio [30 h/40 Aulas]
-                    [local] => C-21 - Bloco C (CNAT)
-                    [horario] => 2V12
-                    [professores] => Array
-                        (
-                            [0] => Nome do Professor
-                        )
-
-                )
-
-            [14:40 - 15:25] => Array
-                (
-                    [diario] => 7351
-                    [codigo] => TIN.0599
-                    [disciplina] => Programação Orientada a Serviços(120H)
-                    [tipo] => Médio [120 h/160 Aulas]
-                    [local] => Laboratório de informática 04 - DIATINF - Informática (CNAT)
-                    [horario] => 2V34 / 5V56
-                    [professores] => Array
-                        (
-                            [0] => Nome do Professor
-                        )
-
-                )
-
-            [15:25 - 16:10] => Array
-                (
-                    [diario] => 7351
-                    [codigo] => TIN.0599
-                    [disciplina] => Programação Orientada a Serviços(120H)
-                    [tipo] => Médio [120 h/160 Aulas]
-                    [local] => Laboratório de informática 04 - DIATINF - Informática (CNAT)
-                    [horario] => 2V34 / 5V56
-                    [professores] => Array
-                        (
-                            [0] => Nome do Professor
-                        )
-
-                )
-
-            [16:30 - 17:15] => Array
-                (
-                    [diario] => 7352
-                    [codigo] => TIN.0598
-                    [disciplina] => Projeto de Interface do Usuário(120H)
-                    [tipo] => Médio [120 h/160 Aulas]
-                    [local] => Laboratório de informática 07 - DIATINF - Informática (CNAT)
-                    [horario] => 2V56 / 5V34
-                    [professores] => Array
-                        (
-                            [0] => Nome do Professor
-                        )
-
-                )
-
-            [17:15 - 18:00] => Array
-                (
-                    [diario] => 7352
-                    [codigo] => TIN.0598
-                    [disciplina] => Projeto de Interface do Usuário(120H)
-                    [tipo] => Médio [120 h/160 Aulas]
-                    [local] => Laboratório de informática 07 - DIATINF - Informática (CNAT)
-                    [horario] => 2V56 / 5V34
-                    [professores] => Array
-                        (
-                            [0] => Nome do Professor
-                        )
-
-                )
-
-        )
-
-    [noturno] => Array
-        (
-            [19:00 - 19:45] =>
-            [19:45 - 20:30] =>
-            [20:40 - 21:25] =>
-            [21:25 - 22:10] =>
+            ...
         )
 
 )
@@ -524,160 +830,11 @@ $client->getWeekSchedule()
 
 Isso retornará um array associativo usando os dias da semana, seguido pelo turno e horários como chave, e as informações do curso como valores.
 
-```
-Array
-(
-    [2] =>
-        Array
-        (
-            [matutino] => Array
-                (
-                    [07:00 - 07:45] =>
-                    [07:45 - 08:30] =>
-                    [08:50 - 09:35] =>
-                    [09:35 - 10:20] =>
-                    [10:30 - 11:15] =>
-                    [11:15 - 12:00] =>
-                )
 
-            [vespertino] => Array
-                (
-                    [13:00 - 13:45] => Array
-                        (
-                            [diario] => 7353
-                            [codigo] => TIN.0244
-                            [disciplina] => Gestão Organizacional(30H)
-                            [tipo] => Médio [30 h/40 Aulas]
-                            [local] => C-21 - Bloco C (CNAT)
-                            [horario] => 2V12
-                            [professores] => Array
-                                (
-                                    [0] => Nome do Professor
-                                )
+### E se ocorrer algum erro durante o request?
+Caso algum erro ocorra durante o request, o cliente HTTP lançará exceções. Isto inclui falha no login, 404, 500, etc...
 
-                        )
-
-                    [13:45 - 14:30] => Array
-                        (
-                            [diario] => 7353
-                            [codigo] => TIN.0244
-                            [disciplina] => Gestão Organizacional(30H)
-                            [tipo] => Médio [30 h/40 Aulas]
-                            [local] => C-21 - Bloco C (CNAT)
-                            [horario] => 2V12
-                            [professores] => Array
-                                (
-                                    [0] => Nome do Professor
-                                )
-
-                        )
-
-                    [14:40 - 15:25] => Array
-                        (
-                            [diario] => 7351
-                            [codigo] => TIN.0599
-                            [disciplina] => Programação Orientada a Serviços(120H)
-                            [tipo] => Médio [120 h/160 Aulas]
-                            [local] => Laboratório de informática 04 - DIATINF - Informática (CNAT)
-                            [horario] => 2V34 / 5V56
-                            [professores] => Array
-                                (
-                                    [0] => Nome do Professor
-                                )
-
-                        )
-
-                    [15:25 - 16:10] => Array
-                        (
-                            [diario] => 7351
-                            [codigo] => TIN.0599
-                            [disciplina] => Programação Orientada a Serviços(120H)
-                            [tipo] => Médio [120 h/160 Aulas]
-                            [local] => Laboratório de informática 04 - DIATINF - Informática (CNAT)
-                            [horario] => 2V34 / 5V56
-                            [professores] => Array
-                                (
-                                    [0] => Nome do Professor
-                                )
-
-                        )
-
-                    [16:30 - 17:15] => Array
-                        (
-                            [diario] => 7352
-                            [codigo] => TIN.0598
-                            [disciplina] => Projeto de Interface do Usuário(120H)
-                            [tipo] => Médio [120 h/160 Aulas]
-                            [local] => Laboratório de informática 07 - DIATINF - Informática (CNAT)
-                            [horario] => 2V56 / 5V34
-                            [professores] => Array
-                                (
-                                    [0] => Nome do Professor
-                                )
-
-                        )
-
-                    [17:15 - 18:00] => Array
-                        (
-                            [diario] => 7352
-                            [codigo] => TIN.0598
-                            [disciplina] => Projeto de Interface do Usuário(120H)
-                            [tipo] => Médio [120 h/160 Aulas]
-                            [local] => Laboratório de informática 07 - DIATINF - Informática (CNAT)
-                            [horario] => 2V56 / 5V34
-                            [professores] => Array
-                                (
-                                    [0] => Nome do Professor
-                                )
-
-                        )
-
-                )
-
-            [noturno] => Array
-                (
-                    [19:00 - 19:45] =>
-                    [19:45 - 20:30] =>
-                    [20:40 - 21:25] =>
-                    [21:25 - 22:10] =>
-                )
-
-        )
-    [3] =>
-        Array
-        (
-            ...
-        )
-    [4] =>
-        Array
-        (
-            ...
-        )
-    [5] =>
-        Array
-        (
-            ...
-        )
-    [6] =>
-        Array
-        (
-            ...
-        )
-```
-
-### E se não houver informações no SUAP?
-Caso alguma informação não seja encontrada no SUAP (Ex. Fim de semestre, aluno terminou o curso, etc...), os métodos retornarão arrays vazios.
-```
-Array
-(
-)
-```
-
-Você pode fazer algo como ```if(! empty($data))``` para saber se os dados foram retornados com sucesso.
-
-
-### Massa! Como isso funciona?
-A biblioteca utiliza um cliente HTTP para fazer os requests ao SUAP, e um DOM Parser para procurar e extrair as informações relevantes das páginas HTML.
+Você deve usar try-catch blocks para tratar os possíveis erros dentro da sua aplicação sempre que usar algum método da API.
 
 ### Desenvolvimento (Como contribuir)
 Para ajudar no Desenvolvimento, clone o repositório, instale as dependências e use o arquivo test.php que encontra-se na pasta tests.
@@ -690,12 +847,15 @@ $ cd tests
 $ php test.php <matricula> <chave>
 ```
 
-Altere o arquivo ```test.php``` de acordo com a sua preferência, mas evite comitar mudanças a menos que tenha adicionado alguma funcionalidade nova a biblioteca.
+Altere o arquivo `test.php` de acordo com a sua preferência, mas evite comitar mudanças a menos que tenha adicionado alguma funcionalidade nova a biblioteca.
 
-O código em desenvolvimento mais recente está na branch ```dev```.
+O código em desenvolvimento mais recente está na branch `master`.
 
 ### Coisas a Fazer:
 Veja a sessão de [Issues](https://github.com/ivmelo/suap-api-php/issues) para ver o que falta fazer ou se tem algum bug precisando de atenção.
+
+### Versões Anteriores
+Para ver as versões anteriores da biblioteca (Incluindo as que fazem web scraping), veja as tags do projeto.
 
 ### Licença
 The MIT License (MIT)
