@@ -8,7 +8,7 @@ use Ivmelo\SUAP\SUAP;
 
 date_default_timezone_set('America/Fortaleza');
 
-/**
+/*
  * Get arguments from terminal.
  *
  * To get a token:
@@ -38,7 +38,6 @@ try {
     } else {
         print_r($client->autenticar($student_id, $suap_key, true));
     }
-
 } catch (Exception $e) {
     // Print exception message.
     echo $e;
