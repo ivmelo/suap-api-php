@@ -6,6 +6,7 @@ use GuzzleHttp\Client;
 
 /**
  * Acessa dados do SUAP (Sistema Unificado de Administração Pública).
+ *
  * @author Ivanilson Melo <meloivanilson@gmail.com>
  */
 class SUAP
@@ -53,10 +54,10 @@ class SUAP
      * Autentica o usuário e retorna um token de acesso.
      * Pode-se usar a senha ou chave de acesso do aluno.
      *
-     * @param string $username Matrícula do aluno.
-     * @param string $password Senha do aluno ou chave de acesso do responsável.
+     * @param string $username  Matrícula do aluno.
+     * @param string $password  Senha do aluno ou chave de acesso do responsável.
      * @param bool   $accessKey Define se o login é por chave de acesso.
-     * @param bool   $setToken Define se deve salvar o token para requests subsequentes.
+     * @param bool   $setToken  Define se deve salvar o token para requests subsequentes.
      *
      * @return array $data Array contendo o token de acesso.
      */
@@ -116,6 +117,7 @@ class SUAP
     public function getMeusDados()
     {
         $url = $this->endpoint.'minhas-informacoes/meus-dados/';
+
         return $this->doGetRequest($url);
     }
 
@@ -127,34 +129,37 @@ class SUAP
     public function getMeusPeriodosLetivos()
     {
         $url = $this->endpoint.'minhas-informacoes/meus-periodos-letivos/';
+
         return $this->doGetRequest($url);
     }
 
     /**
      * Pega o boletim do aluno autenticado.
      *
-     * @param integer $year Ano letivo.
-     * @param integer $term Período letivo.
+     * @param int $year Ano letivo.
+     * @param int $term Período letivo.
      *
      * @return array $data Boletim do aluno.
      */
     public function getMeuBoletim($year, $term)
     {
         $url = $this->endpoint.'minhas-informacoes/boletim/'.$year.'/'.$term.'/';
+
         return $this->doGetRequest($url);
     }
 
     /**
      * Pega a listagem de turmas do aluno para o período solicitado.
      *
-     * @param integer $year Ano letivo.
-     * @param integer $term Período letivo.
+     * @param int $year Ano letivo.
+     * @param int $term Período letivo.
      *
      * @return array $data Listagem de turmas do aluno.
      */
     public function getTurmasVirtuais($year, $term)
     {
         $url = $this->endpoint.'minhas-informacoes/turmas-virtuais/'.$year.'/'.$term.'/';
+
         return $this->doGetRequest($url);
     }
 
@@ -168,14 +173,15 @@ class SUAP
     public function getTurmaVirtual($id)
     {
         $url = $this->endpoint.'minhas-informacoes/turmas-virtuais/'.$id.'/';
+
         return $this->doGetRequest($url);
     }
 
     /**
      * Retorna um array com o horário semanal de um aluno.
      *
-     * @param integer $year Ano letivo.
-     * @param integer $term Período letivo.
+     * @param int $year Ano letivo.
+     * @param int $term Período letivo.
      *
      * @return array $schedule Horário semanal do aluno.
      */
