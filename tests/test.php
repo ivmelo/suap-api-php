@@ -31,13 +31,30 @@ try {
     if (isset($token)) {
         // Se desejar, você pode passar o token no construtor.
         $client->setToken($token);
+
+        // Meus Dados.
         print_r($client->getMeusDados());
-        print_r($client->getMeuBoletim(2016, 2));
-        print_r($client->getTurmasVirtuais(2017, 1));
-        print_r($client->getTurmaVirtual(23115));
-        print_r($client->getHorarios(2017, 1));
-        print_r($client->getMeusPeriodosLetivos());
+
+        // Períodos Letivos.
+        $periodosLetivos = $client->getMeusPeriodosLetivos();
+        print_r($periodosLetivos);
+        $year = end($periodosLetivos)['ano_letivo'];
+        $term = end($periodosLetivos)['periodo_letivo'];
+
+        // Boletim.
+        print_r($client->getMeuBoletim($year, $term));
+
+        // Turmas Virtuais.
+        $turmasVirtuais = $client->getTurmasVirtuais($year, $term);
+        print_r($turmasVirtuais);
+
+        // Detalhes de Turma Virtual.
+        print_r($client->getTurmaVirtual(end($turmasVirtuais)['id']));
+
+        // Horários.
+        print_r($client->getHorarios($year, $term));
     } else {
+        // Autentica e retorna token.
         print_r($client->autenticar($student_id, $suap_key, true));
     }
 } catch (Exception $e) {

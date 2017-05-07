@@ -72,6 +72,75 @@ $suap->autenticar('20121014040000', 'chave', true);
 Para obter a chave de acesso, faça login no SUAP, e vá em "Meus Dados" > "Dados pessoais" > "Dados Gerais" e procure por "Chave de Acesso. Ela deve ter 5 dígitos e ser algo parecido com ```4d5f9```.
 
 
+### Dados do Aluno
+Para receber dados do aluno, basta chamar o método `getMeusDados()`.
+
+```php
+$meusDados = $suap->getMeusDados();
+```
+
+A saída será um array com informações básicas do estudante e do curso.
+
+```
+Array
+(
+    [id] => 123456
+    [matricula] => 20121014040000
+    [nome_usual] => Nome Sobrenome
+    [email] => nome.sobrenome@academico.ifrn.edu.br
+    [url_foto_75x100] => /media/alunos/000000.jpg
+    [tipo_vinculo] => Aluno
+    [vinculo] => Array
+        (
+            [matricula] => 20121014040000
+            [nome] => Nome Completo Do Estudante
+            [curso] => Tecnologia em Análise e Desenvolvimento de Sistemas
+            [campus] => CNAT
+            [situacao] => Matriculado
+            [cota_sistec] =>
+            [cota_mec] =>
+            [situacao_sistemica] => Migrado do Q-Acadêmico para o SUAP
+        )
+
+)
+```
+
+
+### Períodos Letivos
+Para receber os períodos letivos do aluno use o método `getMeusPeriodosLetivos()`.
+
+```php
+$meusDados = $suap->getMeusPeriodosLetivos();
+```
+
+A saída será um array com a listagem de períodos letivos do aluno.
+
+```
+Array
+(
+    [0] => Array
+        (
+            [ano_letivo] => 2012
+            [periodo_letivo] => 1
+        )
+
+    [1] => Array
+        (
+            [ano_letivo] => 2012
+            [periodo_letivo] => 2
+        )
+
+    ...
+
+    [10] => Array
+        (
+            [ano_letivo] => 2017
+            [periodo_letivo] => 1
+        )
+
+)
+```
+
 ### Boletim
 Para receber dados do boletim do aluno, basta instanciar um cliente e chamar o método `getMeuBoletim($anoLetivo, $periodoLetivo)`.
 
@@ -352,39 +421,6 @@ Array
                 )
 
             [media_final_disciplina] => 63
-        )
-
-)
-```
-
-### Dados do Aluno
-Para receber dados do aluno, basta chamar o método `getMeusDados()`.
-
-```php
-$meusDados = $suap->getMeusDados();
-```
-
-A saída será um array com informações básicas do estudante e do curso.
-
-```
-Array
-(
-    [id] => 123456
-    [matricula] => 20121014040000
-    [nome_usual] => Nome Sobrenome
-    [email] => nome.sobrenome@academico.ifrn.edu.br
-    [url_foto_75x100] => /media/alunos/000000.jpg
-    [tipo_vinculo] => Aluno
-    [vinculo] => Array
-        (
-            [matricula] => 20121014040000
-            [nome] => Nome Completo Do Estudante
-            [curso] => Tecnologia em Análise e Desenvolvimento de Sistemas
-            [campus] => CNAT
-            [situacao] => Matriculado
-            [cota_sistec] =>
-            [cota_mec] =>
-            [situacao_sistemica] => Migrado do Q-Acadêmico para o SUAP
         )
 
 )

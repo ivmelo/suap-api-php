@@ -98,6 +98,11 @@ class SUAP
         return $data;
     }
 
+    public function verificarToken()
+    {
+        
+    }
+
     /**
      * Seta o token para acesso a API.
      *
