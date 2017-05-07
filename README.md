@@ -6,15 +6,13 @@
 [![Total Downloads](https://poser.pugx.org/ivmelo/suap-api-php/downloads)](https://packagist.org/packages/ivmelo/suap-api-php)
 [![License](https://poser.pugx.org/ivmelo/suap-api-php/license)](https://packagist.org/packages/ivmelo/suap-api-php)
 
-Um wrapper PHP para a API do [SUAP (Sistema Unificado de Administração Publica)](http://portal.ifrn.edu.br/tec-da-informacao/servicos-ti/menus/servicos/copy2_of_suap) do IFRN.
-
-Este pacote permite que você tenha acesso aos dados do SUAP na sua aplicação PHP. http://suap.ifrn.edu.br/api/docs/
+Um wrapper PHP para a [API](http://suap.ifrn.edu.br/api/docs/) do [SUAP (Sistema Unificado de Administração Publica)](http://portal.ifrn.edu.br/tec-da-informacao/servicos-ti/menus/servicos/copy2_of_suap) do IFRN. Este pacote permite que você tenha acesso aos dados do SUAP na sua aplicação PHP.
 
 É o componente principal do [SUAP Bot](https://telegram.me/suapbot).
 
 Atualmente fornece informações de boletim (notas, frequência), cursos, horários, locais de aula e dados do aluno.
 
-Este pacote foi atualizado para pegar os dados através da API oficial do SUAP, e não mais fazendo web scraping. Caso deseje utilizar a versão que faz web scraping, veja as tags 0.2.X.
+Este pacote foi atualizado para acessar os dados através da API oficial do SUAP, e não mais fazendo web scraping. Caso deseje utilizar a versão que faz web scraping, veja a tag `0.2.0`.
 
 
 ### Instalação
@@ -151,6 +149,8 @@ $boletim = $suap->getMeuBoletim(2017, 1);
 
 A saída será um array com informações sobre a disciplina encontradas no boletim do aluno.
 
+Alunos do ensino superior só terão as notas da etapa 1 e 2.
+
 ```
 Array
 (
@@ -244,140 +244,7 @@ Array
             [media_final_disciplina] => 92
         )
 
-    [2] => Array
-        (
-            [codigo_diario] => 15361
-            [disciplina] => TEC.0029 - Gerencia de Projetos
-            [segundo_semestre] =>
-            [carga_horaria] => 80
-            [carga_horaria_cumprida] => 80
-            [numero_faltas] => 2
-            [percentual_carga_horaria_frequentada] => 98
-            [situacao] => Aprovado
-            [quantidade_avaliacoes] => 2
-            [nota_etapa_1] => Array
-                (
-                    [nota] => 50
-                    [faltas] => 2
-                )
-
-            [nota_etapa_2] => Array
-                (
-                    [nota] => 100
-                    [faltas] => 0
-                )
-
-            [nota_etapa_3] => Array
-                (
-                    [nota] =>
-                    [faltas] => 0
-                )
-
-            [nota_etapa_4] => Array
-                (
-                    [nota] =>
-                    [faltas] => 0
-                )
-
-            [media_disciplina] => 80
-            [nota_avaliacao_final] => Array
-                (
-                    [nota] =>
-                    [faltas] => 0
-                )
-
-            [media_final_disciplina] => 80
-        )
-
-    [3] => Array
-        (
-            [codigo_diario] => 16586
-            [disciplina] => TEC.0080 - Paradigmas de Linguagens de Programação
-            [segundo_semestre] =>
-            [carga_horaria] => 80
-            [carga_horaria_cumprida] => 76
-            [numero_faltas] => 30
-            [percentual_carga_horaria_frequentada] => 61
-            [situacao] => Aprovado
-            [quantidade_avaliacoes] => 2
-            [nota_etapa_1] => Array
-                (
-                    [nota] => 74
-                    [faltas] => 12
-                )
-
-            [nota_etapa_2] => Array
-                (
-                    [nota] => 90
-                    [faltas] => 18
-                )
-
-            [nota_etapa_3] => Array
-                (
-                    [nota] =>
-                    [faltas] => 0
-                )
-
-            [nota_etapa_4] => Array
-                (
-                    [nota] =>
-                    [faltas] => 0
-                )
-
-            [media_disciplina] => 84
-            [nota_avaliacao_final] => Array
-                (
-                    [nota] =>
-                    [faltas] => 0
-                )
-
-            [media_final_disciplina] => 84
-        )
-
-    [4] => Array
-        (
-            [codigo_diario] => 15362
-            [disciplina] => TEC.0034 - Seminário de Orientação ao Projeto de Desenvolvimento de Sistema Coorporativo
-            [segundo_semestre] =>
-            [carga_horaria] => 40
-            [carga_horaria_cumprida] => 40
-            [numero_faltas] => 8
-            [percentual_carga_horaria_frequentada] => 80
-            [situacao] => Aprovado
-            [quantidade_avaliacoes] => 2
-            [nota_etapa_1] => Array
-                (
-                    [nota] => 65
-                    [faltas] => 6
-                )
-
-            [nota_etapa_2] => Array
-                (
-                    [nota] => 65
-                    [faltas] => 2
-                )
-
-            [nota_etapa_3] => Array
-                (
-                    [nota] =>
-                    [faltas] => 0
-                )
-
-            [nota_etapa_4] => Array
-                (
-                    [nota] =>
-                    [faltas] => 0
-                )
-
-            [media_disciplina] => 65
-            [nota_avaliacao_final] => Array
-                (
-                    [nota] =>
-                    [faltas] => 0
-                )
-
-            [media_final_disciplina] => 65
-        )
+    ...
 
     [5] => Array
         (
@@ -437,6 +304,7 @@ $turmasVirtuais = $suap->getTurmasVirtuais(2017, 1);
 O método retornará um array com a lista de disciplinas do semestre atual junto com outras informações sobre as mesmas.
 
 ```
+Array
 (
     [0] => Array
         (
@@ -689,20 +557,7 @@ Array
                             [time] => 07:00 - 07:45
                         )
 
-                    [2] => Array
-                        (
-                            [time] => 07:45 - 08:30
-                        )
-
-                    [3] => Array
-                        (
-                            [time] => 08:50 - 09:35
-                        )
-
-                    [4] => Array
-                        (
-                            [time] => 09:35 - 10:20
-                        )
+                    ...
 
                     [5] => Array
                         (
@@ -813,15 +668,7 @@ Array
                             [time] => 19:00 - 19:45
                         )
 
-                    [2] => Array
-                        (
-                            [time] => 19:45 - 20:30
-                        )
-
-                    [3] => Array
-                        (
-                            [time] => 20:40 - 21:25
-                        )
+                    ...
 
                     [4] => Array
                         (
@@ -837,20 +684,7 @@ Array
             ...
         )
 
-    [4] => Array
-        (
-            ...
-        )
-
-    [5] => Array
-        (
-            ...
-        )
-
-    [6] => Array
-        (
-            ...
-        )
+    ...
 
     [7] => Array
         (
@@ -859,18 +693,6 @@ Array
 
 )
 ```
-
-### Horários de Aula da Semana
-Para recuperar horários de aula da semana inteira, use o método ```getWeekSchedule()```.
-
-Nos arrays retornados 1 representa o domingo, 2 a segunda, 3 a terça...
-
-```php
-$client->getWeekSchedule()
-```
-
-Isso retornará um array associativo usando os dias da semana, seguido pelo turno e horários como chave, e as informações do curso como valores.
-
 
 ### E se ocorrer algum erro durante o request?
 Caso algum erro ocorra durante o request, o cliente HTTP lançará exceções. Isto inclui falha no login, 404, 500, etc...
