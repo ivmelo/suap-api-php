@@ -11,7 +11,7 @@ use GuzzleHttp\Client;
 class SUAP
 {
     /**
-     * O token de acesso do usuário.
+     * O token de acesso do usuário. Tokens tem 24 horas de validade.
      *
      * @var string Token de acesso.
      */
@@ -98,11 +98,6 @@ class SUAP
         return $data;
     }
 
-    public function verificarToken()
-    {
-        
-    }
-
     /**
      * Seta o token para acesso a API.
      *
@@ -177,30 +172,6 @@ class SUAP
     }
 
     /**
-     * Faz um request GET para um endpoint definido.
-     *
-     * @param string $url Url para fazer o request.
-     *
-     * @return array $data Dados retornados pela API.
-     */
-    private function doGetRequest($url)
-    {
-        $response = $this->client->request('GET', $url, [
-            'headers' => [
-                'Authorization' => 'JWT '.$this->token,
-            ],
-        ]);
-
-        $data = false;
-
-        if ($response->getStatusCode() == 200) {
-            $data = json_decode($response->getBody(), true);
-        }
-
-        return $data;
-    }
-
-    /**
      * Retorna um array com o horário semanal de um aluno.
      *
      * @param integer $year Ano letivo.
@@ -257,5 +228,29 @@ class SUAP
         }
 
         return $schedule;
+    }
+
+    /**
+     * Faz um request GET para um endpoint definido.
+     *
+     * @param string $url Url para fazer o request.
+     *
+     * @return array $data Dados retornados pela API.
+     */
+    private function doGetRequest($url)
+    {
+        $response = $this->client->request('GET', $url, [
+            'headers' => [
+                'Authorization' => 'JWT '.$this->token,
+            ],
+        ]);
+
+        $data = false;
+
+        if ($response->getStatusCode() == 200) {
+            $data = json_decode($response->getBody(), true);
+        }
+
+        return $data;
     }
 }

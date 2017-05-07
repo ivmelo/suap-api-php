@@ -37,9 +37,10 @@ $ composer require "ivmelo/suap-api-php": "1.0.*"
 Você pode instanciar um cliente usando um token de acesso, ou usar o construtor vazio.
 
 ```php
-$suap = SUAP('tokendeacessodoaluno');
+$suap = SUAP('token');
 // ou
 $suap = SUAP();
+$suap->setToken('token');
 
 ```
 
@@ -49,10 +50,10 @@ Para autenticar, basta usar chamar o método `autenticar($usuario, $chave)`.
 
 ```
 $suap = SUAP();
-$suap->autenticar('20121014040000', 'senhaouchave');
+$data = $suap->autenticar('20121014040000', 'senhaouchave');
 ```
 
-O método retornará um array com um token de acesso.
+O método retornará um array com um token de acesso (`$data['token']`).
 ```
 Array
 (
