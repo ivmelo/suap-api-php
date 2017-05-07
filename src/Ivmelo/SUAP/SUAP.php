@@ -223,14 +223,17 @@ class SUAP
             $horarios = explode(' / ', $class['horarios_de_aula']);
 
             foreach ($horarios as $horario) {
-                $day = $horario[0];
-                $shift = $horario[1];
+                // As vezes disciplinas não tem horários. Isso resulta em uma String vazia.
+                if ($horario != '') {
+                    $day = $horario[0];
+                    $shift = $horario[1];
 
-                $stringSize = strlen($horario);
+                    $stringSize = strlen($horario);
 
-                for ($i = 2; $i < $stringSize; $i++) {
-                    $slot = $horario[$i];
-                    $schedule[$day][$shift][$slot]['aula'] = $class;
+                    for ($i = 2; $i < $stringSize; $i++) {
+                        $slot = $horario[$i];
+                        $schedule[$day][$shift][$slot]['aula'] = $class;
+                    }
                 }
             }
         }
