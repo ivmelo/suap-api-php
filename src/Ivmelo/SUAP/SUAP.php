@@ -226,7 +226,9 @@ class SUAP
                 $day = $horario[0];
                 $shift = $horario[1];
 
-                for ($i = 2; $i < strlen($horario); $i++) {
+                $stringSize = strlen($horario);
+
+                for ($i = 2; $i < $stringSize; $i++) {
                     $slot = $horario[$i];
                     $schedule[$day][$shift][$slot]['aula'] = $class;
                 }

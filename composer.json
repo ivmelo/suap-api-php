@@ -1,6 +1,6 @@
 {
     "name": "ivmelo/suap-api-php",
-    "description": "Uma API PHP para o SUAP.",
+    "description": "Wrapper PHP para a API do SUAP.",
     "type": "library",
     "require": {
         "guzzlehttp/guzzle": "~6.0"

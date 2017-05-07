@@ -6,7 +6,7 @@
 [![Total Downloads](https://poser.pugx.org/ivmelo/suap-api-php/downloads)](https://packagist.org/packages/ivmelo/suap-api-php)
 [![License](https://poser.pugx.org/ivmelo/suap-api-php/license)](https://packagist.org/packages/ivmelo/suap-api-php)
 
-Um wraper PHP para a API do [SUAP (Sistema Unificado de Administração Publica)](http://portal.ifrn.edu.br/tec-da-informacao/servicos-ti/menus/servicos/copy2_of_suap) do IFRN.
+Um wrapper PHP para a API do [SUAP (Sistema Unificado de Administração Publica)](http://portal.ifrn.edu.br/tec-da-informacao/servicos-ti/menus/servicos/copy2_of_suap) do IFRN.
 
 Este pacote permite que você tenha acesso aos dados do SUAP na sua aplicação PHP. http://suap.ifrn.edu.br/api/docs/
 
