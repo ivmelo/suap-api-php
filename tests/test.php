@@ -9,12 +9,12 @@ use Ivmelo\SUAP\SUAP;
 date_default_timezone_set('America/Fortaleza');
 
 /*
- * Get arguments from terminal.
+ * Recebe argumentos do terminal.
  *
- * To get a token:
+ * Para pegar um Token:
  * $ php test.php <student_id> <acess_key>
  *
- * Then, you can use your token to get student data:
+ * Depois, você pode usar o token para fazer os requests:
  * $ php test.php <token>
  *
  */
@@ -29,16 +29,18 @@ try {
     $client = new SUAP();
 
     if (isset($token)) {
-        $client->setToken($token); // You can use the constructor the same way.
+        // Se desejar, você pode passar o token no construtor.
+        $client->setToken($token);
         print_r($client->getMeusDados());
         print_r($client->getMeuBoletim(2016, 2));
         print_r($client->getTurmasVirtuais(2017, 1));
         print_r($client->getTurmaVirtual(23115));
         print_r($client->getHorarios(2017, 1));
+        print_r($client->getMeusPeriodosLetivos());
     } else {
         print_r($client->autenticar($student_id, $suap_key, true));
     }
 } catch (Exception $e) {
-    // Print exception message.
+    // Mostrar erros.
     echo $e;
 }

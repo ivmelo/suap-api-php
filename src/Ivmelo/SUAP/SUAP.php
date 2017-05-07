@@ -5,35 +5,36 @@ namespace Ivmelo\SUAP;
 use GuzzleHttp\Client;
 
 /**
- * Access data from SUAP (Sistema Unificado de Administração Pública).
+ * Acessa dados do SUAP (Sistema Unificado de Administração Pública).
+ * @author Ivanilson Melo <meloivanilson@gmail.com>
  */
 class SUAP
 {
     /**
-     * The user's access token.
+     * O token de acesso do usuário.
      *
-     * @var string
+     * @var string Token de acesso.
      */
     private $token;
 
     /**
-     * Endpoint for SUAP.
+     * Endpoint do SUAP.
      *
-     * @var string
+     * @var string Endpoint de acesso ao suap.
      */
     private $endpoint = 'https://suap.ifrn.edu.br/api/v2/';
 
     /**
-     * A Goutte client to execute http requests.
+     * Um cliente GuzzleHttp para fazer os requests HTTP.
      *
-     * @var GuzzleHttp\Client
+     * @var GuzzleHttp\Client Cliente GuzzleHttp.
      */
     private $client;
 
     /**
-     * Construct function.
+     * Construtor. Pode ser vazio ou receber um token de acesso.
      *
-     * @param string $token
+     * @param string $token Token de acesso.
      */
     public function __construct($token = false)
     {
@@ -49,18 +50,19 @@ class SUAP
     }
 
     /**
-     * Authenticate user. Supports both password and access key.
+     * Autentica o usuário e retorna um token de acesso.
+     * Pode-se usar a senha ou chave de acesso do aluno.
      *
-     * @param string $username
-     * @param string $password
-     * @param bool   $accessKey
-     * @param bool   $setToken
+     * @param string $username Matrícula do aluno.
+     * @param string $password Senha do aluno ou chave de acesso do responsável.
+     * @param bool   $accessKey Define se o login é por chave de acesso.
+     * @param bool   $setToken Define se deve salvar o token para requests subsequentes.
      *
-     * @return array $data
+     * @return array $data Array contendo o token de acesso.
      */
     public function autenticar($username, $password, $accessKey = false, $setToken = true)
     {
-        // If accessing with a parent access key...
+        // Se estiver acessando com uma chave de acesso...
         if ($accessKey) {
             $url = $this->endpoint.'autenticacao/acesso_responsaveis/';
 
@@ -84,10 +86,10 @@ class SUAP
         $data = false;
 
         if ($response->getStatusCode() == 200) {
-            // Decode the JSON response in to an array.
+            // Decodifica a resposta JSON para um array.
             $data = json_decode($response->getBody(), true);
 
-            // Set token if requested to do so. Default is true;
+            // Seta o token se solicitado. Padrão é true.
             if ($setToken && isset($data['token'])) {
                 $this->setToken($data['token']);
             }
@@ -97,9 +99,9 @@ class SUAP
     }
 
     /**
-     * Set's the token for api access.
+     * Seta o token para acesso a API.
      *
-     * @param string $token
+     * @param string $token Token de acesso.
      */
     public function setToken($token)
     {
@@ -107,59 +109,74 @@ class SUAP
     }
 
     /**
-     * Get personal data for the authenticated student.
+     * Pega os dados pessoais do aluno autenticado.
      *
-     * @return array $data
+     * @return array $data Dados pessoais do aluno.
      */
     public function getMeusDados()
     {
         $url = $this->endpoint.'minhas-informacoes/meus-dados/';
-
         return $this->doGetRequest($url);
     }
 
     /**
-     * Get report card data for the authenticated student.
+     * Pega os períodos letivos do aluno autenticado.
      *
-     * @return array $data
+     * @return array $data Períodos letivos do aluno.
+     */
+    public function getMeusPeriodosLetivos()
+    {
+        $url = $this->endpoint.'minhas-informacoes/meus-periodos-letivos/';
+        return $this->doGetRequest($url);
+    }
+
+    /**
+     * Pega o boletim do aluno autenticado.
+     *
+     * @param integer $year Ano letivo.
+     * @param integer $term Período letivo.
+     *
+     * @return array $data Boletim do aluno.
      */
     public function getMeuBoletim($year, $term)
     {
         $url = $this->endpoint.'minhas-informacoes/boletim/'.$year.'/'.$term.'/';
-
         return $this->doGetRequest($url);
     }
 
     /**
-     * Get a listing of the student classes for a given term.
+     * Pega a listagem de turmas do aluno para o período solicitado.
      *
-     * @return array $data
+     * @param integer $year Ano letivo.
+     * @param integer $term Período letivo.
+     *
+     * @return array $data Listagem de turmas do aluno.
      */
     public function getTurmasVirtuais($year, $term)
     {
         $url = $this->endpoint.'minhas-informacoes/turmas-virtuais/'.$year.'/'.$term.'/';
-
         return $this->doGetRequest($url);
     }
 
     /**
-     * Get details about a student class.
+     * Pega detalhes sobre uma turma especificada.
      *
-     * @return array $data
+     * @param int $id Id da turma virtual.
+     *
+     * @return array $data Detalhes da turma virtual.
      */
     public function getTurmaVirtual($id)
     {
         $url = $this->endpoint.'minhas-informacoes/turmas-virtuais/'.$id.'/';
-
         return $this->doGetRequest($url);
     }
 
     /**
-     * Do a get request to a defined endpoint.
+     * Faz um request GET para um endpoint definido.
      *
-     * @param string $url
+     * @param string $url Url para fazer o request.
      *
-     * @return array $data
+     * @return array $data Dados retornados pela API.
      */
     private function doGetRequest($url)
     {
@@ -172,7 +189,6 @@ class SUAP
         $data = false;
 
         if ($response->getStatusCode() == 200) {
-            // Decode the JSON response in to an array.
             $data = json_decode($response->getBody(), true);
         }
 
@@ -180,12 +196,12 @@ class SUAP
     }
 
     /**
-     * Return the weekly schedule of a student.
+     * Retorna um array com o horário semanal de um aluno.
      *
-     * @param int $year
-     * @param int $term
+     * @param integer $year Ano letivo.
+     * @param integer $term Período letivo.
      *
-     * @return array $schedules
+     * @return array $schedule Horário semanal do aluno.
      */
     public function getHorarios($year, $term)
     {
@@ -220,7 +236,7 @@ class SUAP
         $schedule[6] = $shifts;
         $schedule[7] = $shifts;
 
-        // Put the data into an array for easy manipulation.
+        // Insere os dados da aula (2M12, 3V34) no local apropriado no array.
         foreach ($classes as $class) {
             $horarios = explode(' / ', $class['horarios_de_aula']);
 
