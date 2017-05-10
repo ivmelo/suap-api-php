@@ -31,6 +31,12 @@ Alternativamente, você pode instalar diretamente pela linha de comando:
 $ composer require "ivmelo/suap-api-php": "1.0.*"
 ```
 
+**Dependências php obrigatórias (verificar php.ini)**
+```
+ext-mbstring
+php-xml
+```
+
 ### Uso
 Você pode instanciar um cliente usando um token de acesso, ou usar o construtor vazio.
 
