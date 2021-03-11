@@ -172,7 +172,7 @@ class SUAP
      */
     public function getTurmaVirtual($id)
     {
-        $url = $this->endpoint.'minhas-informacoes/turmas-virtuais/'.$id.'/';
+        $url = $this->endpoint.'minhas-informacoes/turma-virtual/'.$id.'/';
 
         return $this->doGetRequest($url);
     }
