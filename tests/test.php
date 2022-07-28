@@ -12,7 +12,7 @@ date_default_timezone_set('America/Fortaleza');
  * Recebe argumentos do terminal.
  *
  * Para pegar um Token:
- * $ php test.php <student_id> <acess_key>
+ * $ php test.php <student_id> <access_key>
  *
  * Depois, você pode usar o token para fazer os requests:
  * $ php test.php <token>
@@ -55,7 +55,7 @@ try {
         print_r($client->getHorarios($year, $term));
     } else {
         // Autentica e retorna token.
-        print_r($client->autenticar($student_id, $suap_key, true));
+        print_r($client->autenticar($student_id, $suap_key, false, true));
     }
 } catch (Exception $e) {
     // Mostrar erros.
