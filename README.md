@@ -51,11 +51,12 @@ $suap = SUAP();
 $data = $suap->autenticar('20121014040000', 'senhaouchave');
 ```
 
-O método retornará um array com um token de acesso (`$data['token']`).
+O método retornará um array com um token de acesso (`$data['access']`) e outro de renovação (`$data['refresh']`).
 ```
 Array
 (
-    [token] => eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9eyJ1c2VybmFtZSI6IjIwMTIxMDE0MDQwMDgzIiwib3JpZ19pYXQiOjE0OTQwMjcyMDksInVzZXJfaWQiOjEwODQyLCJlbWFpbCI6Iml2YW5pbHNvbi5tZWxvQGFjYWRlbWljby5pZnJuLmVkdS5iciIsImV4cCI6MTQ5NDExMzYwOX0
+    [refresh] => eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTY1OTExODcxNCwiaWF0IjoxNjU5MDMyMzE0LCJqdGkiOiI3MGNkOWFhZDVmZmU0ZWU4YjliZWQ1Yjk5ODE0MTNjZiIsInVzZXJfaWQiOjQzODR9._42_QxSkUKr_Xq6vWiq97jjicnA6Buaij9Sckc-9PWs
+    [access] => eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjU5MDMyNjE0LCJpYXQiOjE2NTkwMzIzMTQsImp0aSI6IjhjNWY5Mjk4MTk2ODQ4NmFhMDIzNzBmYmQxYWQ3ZTYyIiwidXNlcl9pZCI6NDM4NH0.wC9KkHj76aj1plYHbr0HRUSxqG7BUjXX_Bc-Sa-7yO8
 )
 ```
 
@@ -710,7 +711,15 @@ $ cd tests
 $ php test.php <matricula> <chave>
 ```
 
-Altere o arquivo `test.php` de acordo com a sua preferência, mas evite comitar mudanças a menos que tenha adicionado alguma funcionalidade nova a biblioteca.
+Utilize a chave *access* retornada acima para testar as demais requisições.
+Elas funcionarão por completo apenas se a matrícula utilizada anteriormente
+for de estudante:
+
+```bash
+$ php test.php <access>
+```
+
+Altere o arquivo `test.php` de acordo com a sua preferência, mas evite commits com mudanças a menos que tenha adicionado alguma funcionalidade nova a biblioteca.
 
 O código em desenvolvimento mais recente está na branch `master`.
 
